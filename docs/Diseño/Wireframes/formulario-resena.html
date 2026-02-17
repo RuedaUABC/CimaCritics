@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Reseña - CimaCritics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        .form-container { max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border: 1px solid #ddd; }
+        .rating { margin: 20px 0; }
+        .rating input { display: none; }
+        .rating label { font-size: 30px; color: #ddd; cursor: pointer; }
+        .rating input:checked ~ label { color: #ffca08; }
+        .rating label:hover, .rating label:hover ~ label { color: #ffca08; }
+        textarea { width: 100%; height: 150px; padding: 10px; margin: 10px 0; }
+        .buttons { text-align: center; margin-top: 20px; }
+        .buttons button { padding: 10px 20px; margin: 0 10px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Crear Reseña - Título del Cómic</h2>
+        
+        <div class="rating">
+            <span>Calificación:</span>
+            <input type="radio" id="star5" name="rating" value="5"><label for="star5">☆</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4">☆</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3">☆</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2">☆</label>
+            <input type="radio" id="star1" name="rating" value="1"><label for="star1">☆</label>
+        </div>
+        
+        <label for="review">Tu Reseña:</label>
+        <textarea id="review" placeholder="Escribe tu opinión sobre este cómic..."></textarea>
+        
+        <div class="buttons">
+            <button>Publicar Reseña</button>
+            <button>Cancelar</button>
+        </div>
+    </div>
+</body>
+</html>

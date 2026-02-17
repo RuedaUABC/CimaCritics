@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Cómic - CimaCritics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        header { display: flex; justify-content: space-between; align-items: center; background-color: #333; color: white; padding: 10px 20px; }
+        .comic-details { display: flex; gap: 20px; margin-top: 20px; }
+        .comic-image { width: 200px; height: 300px; background-color: #ccc; }
+        .info { flex: 1; }
+        .reviews { margin-top: 20px; }
+        .review { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background-color: white; }
+        .review-actions { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" style="color: white;">← Volver</a>
+        <nav>
+            <a href="#" style="color: white; margin-right: 10px;">Login</a>
+            <a href="#" style="color: white;">Registro</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="comic-details">
+            <div class="comic-image"></div>
+            <div class="info">
+                <h2>Título del Cómic</h2>
+                <p><strong>Autor:</strong> Nombre Autor</p>
+                <p><strong>Editorial:</strong> Editorial</p>
+                <p><strong>Año:</strong> 2023</p>
+                <p><strong>Género:</strong> Acción</p>
+                <p>★★★★☆ (4.2) - 127 reseñas</p>
+                <p><strong>Descripción:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <button>Crear Reseña</button>
+            </div>
+        </div>
+        
+        <div class="reviews">
+            <h3>Reseñas Recientes:</h3>
+            <div class="review">
+                <h4>Usuario1 ★★★★★</h4>
+                <p>Excelente cómic, muy recomendado!</p>
+                <div class="review-actions">
+                    <button>👍 12</button>
+                    <button>👎 2</button>
+                </div>
+            </div>
+            <div class="review">
+                <h4>Usuario2 ★★★★☆</h4>
+                <p>Bueno, pero le faltó algo...</p>
+                <div class="review-actions">
+                    <button>👍 8</button>
+                    <button>👎 5</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

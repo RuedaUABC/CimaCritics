@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda - CimaCritics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        header { display: flex; justify-content: space-between; align-items: center; background-color: #333; color: white; padding: 10px 20px; }
+        .search { margin: 20px 0; }
+        .search input { width: 300px; padding: 10px; }
+        .search button { padding: 10px; }
+        .filters { margin: 20px 0; }
+        .filters select { padding: 5px; margin-right: 10px; }
+        .results { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+        .comic-card { border: 1px solid #ddd; padding: 10px; background-color: white; width: 200px; text-align: center; }
+        .comic-card img { width: 100%; height: 150px; background-color: #ccc; }
+        .pagination { text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CimaCritics</h1>
+        <nav>
+            <a href="#" style="color: white;">Login</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="search">
+            <input type="text" placeholder="Buscar...">
+            <button>🔍</button>
+        </div>
+        
+        <div class="filters">
+            <label>Género: <select><option>Todos</option></select></label>
+            <label>Editorial: <select><option>Todos</option></select></label>
+            <label>Año: <select><option>Todos</option></select></label>
+        </div>
+        
+        <p>Resultados (15 encontrados):</p>
+        
+        <div class="results">
+            <div class="comic-card">
+                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
+                <h4>Cómic A</h4>
+                <p>Autor 1</p>
+                <p>★★★★☆ (4.1)</p>
+            </div>
+            <div class="comic-card">
+                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
+                <h4>Cómic B</h4>
+                <p>Autor 2</p>
+                <p>★★★★☆ (3.8)</p>
+            </div>
+            <div class="comic-card">
+                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
+                <h4>Cómic C</h4>
+                <p>Autor 3</p>
+                <p>★★★★☆ (4.3)</p>
+            </div>
+        </div>
+        
+        <div class="pagination">
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <span>...</span>
+            <button>15</button>
+            <button>Siguiente ></button>
+        </div>
+    </main>
+</body>
+</html>

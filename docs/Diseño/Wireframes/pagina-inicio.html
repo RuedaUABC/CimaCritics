@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Inicio - CimaCritics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        header { display: flex; justify-content: space-between; align-items: center; background-color: #333; color: white; padding: 10px 20px; }
+        .search { margin: 20px 0; }
+        .search input { width: 300px; padding: 10px; }
+        .search button { padding: 10px; }
+        .featured { display: flex; gap: 20px; margin-top: 20px; }
+        .comic-card { border: 1px solid #ddd; padding: 10px; background-color: white; width: 200px; text-align: center; }
+        .comic-card img { width: 100%; height: 150px; background-color: #ccc; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CimaCritics</h1>
+        <nav>
+            <a href="#" style="color: white; margin-right: 10px;">Login</a>
+            <a href="#" style="color: white;">Registro</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>¡Bienvenido a CimaCritics!</h2>
+        <p>Descubre y comparte reseñas de cómics</p>
+        
+        <div class="search">
+            <input type="text" placeholder="Buscar cómics...">
+            <button>🔍</button>
+        </div>
+        
+        <h3>Cómics Destacados:</h3>
+        <div class="featured">
+            <div class="comic-card">
+                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
+                <h4>Cómic 1</h4>
+                <p>★★★★☆ (4.2)</p>
+                <button>Ver detalles</button>
+            </div>
+            <div class="comic-card">
+                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
+                <h4>Cómic 2</h4>
+                <p>★★★★☆ (4.1)</p>
+                <button>Ver detalles</button>
+            </div>
+            <div class="comic-card">
+                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
+                <h4>Cómic 3</h4>
+                <p>★★★★☆ (4.0)</p>
+                <button>Ver detalles</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
