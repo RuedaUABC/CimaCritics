@@ -57,3 +57,66 @@
 2. Selecciona acción (crear/editar/eliminar cómic)
 3. Modifica datos
 4. Guarda cambios
+
+**Flujos Alternativos**:
+- Si el cómic no existe, mostrar error
+- Si hay reseñas asociadas, confirmar eliminación
+
+**Excepciones**:
+- Usuario no autorizado: Redirigir a login
+
+## 6. Caso de Uso: Seguir Usuario
+**Actor**: Usuario registrado
+**Descripción**: Usuario sigue a otro usuario para ver sus reseñas
+**Precondiciones**: Usuario logueado, usuario objetivo existe
+**Postcondiciones**: Relación de seguimiento creada
+**Flujo Principal**:
+1. Usuario visita perfil de otro usuario
+2. Hace clic en "Seguir"
+3. Sistema actualiza lista de seguidores
+4. Muestra notificación
+
+## 7. Caso de Uso: Reportar Contenido
+**Actor**: Usuario registrado
+**Descripción**: Usuario reporta reseña o cómic inapropiado
+**Precondiciones**: Usuario logueado, contenido existe
+**Postcondiciones**: Reporte enviado a moderadores
+**Flujo Principal**:
+1. Usuario selecciona contenido
+2. Hace clic en "Reportar"
+3. Selecciona motivo (spam, contenido ofensivo, etc.)
+4. Envía reporte
+5. Sistema notifica a administradores
+
+## 8. Caso de Uso: Moderar Reportes
+**Actor**: Moderador/Administrador
+**Descripción**: Revisar y gestionar reportes de contenido
+**Precondiciones**: Usuario es moderador
+**Postcondiciones**: Contenido moderado o aprobado
+**Flujo Principal**:
+1. Moderador accede a panel de moderación
+2. Revisa lista de reportes
+3. Selecciona reporte
+4. Decide acción (aprobar, eliminar contenido, banear usuario)
+5. Aplica acción
+
+## 9. Caso de Uso: Ver Recomendaciones
+**Actor**: Usuario registrado
+**Descripción**: Usuario ve recomendaciones personalizadas de cómics
+**Precondiciones**: Usuario logueado, suficientes datos de reseñas
+**Postcondiciones**: Lista de recomendaciones mostrada
+**Flujo Principal**:
+1. Usuario accede a sección de recomendaciones
+2. Sistema analiza reseñas del usuario
+3. Genera lista basada en similitudes
+4. Muestra cómics recomendados con razones
+
+## 10. Caso de Uso: Ver Estadísticas
+**Actor**: Cualquier usuario
+**Descripción**: Usuario ve estadísticas globales o personales
+**Precondiciones**: Ninguna
+**Postcondiciones**: Estadísticas mostradas
+**Flujo Principal**:
+1. Usuario selecciona sección de estadísticas
+2. Elige tipo (global, personal, por género)
+3. Sistema calcula y muestra gráficos/datos
