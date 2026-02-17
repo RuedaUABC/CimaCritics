@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Información del cómic -->
+        <div class="card mb-4">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    {% if comic.imagen_url %}
+                    <img src="{{ comic.imagen_url }}" class="img-fluid rounded-start" alt="{{ comic.titulo }}">
+                    {% else %}
+                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <i class="fas fa-book fa-4x text-white"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h1 class="card-title">{{ comic.titulo }}</h1>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong>Autor:</strong> {{ comic.autor }}
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Año:</strong> {{ comic.año or 'N/A' }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong>Editorial:</strong> {{ comic.editorial or 'N/A' }}
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Género:</strong> {{ comic.genero or 'N/A' }}
+                            </div>
+                        </div>
+
+                        {% if comic.promedio_calificacion %}
+                        <div class="mb-3">
+                            <span class="badge bg-warning text-dark fs-6">
+                                <i class="fas fa-star"></i> {{ "%.1f"|format(comic.promedio_calificacion) }} / 5
+                            </span>
+                            <small class="text-muted ms-2">
+                                Basado en {{ reviews|length }} reseña{{ 's' if reviews|length != 1 else '' }}
+                            </small>
+                        </div>
+                        {% endif %}
+
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('add_review', comic_id=comic.id) }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Escribir Reseña
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descripción -->
+        {% if comic.descripcion %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> Sinopsis
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ comic.descripcion }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Reseñas -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-comments"></i> Reseñas ({{ reviews|length }})
+                </h5>
+            </div>
+
+            <div class="card-body">
+                {% if reviews %}
+                    {% for review in reviews %}
+                    <div class="review-item mb-4 pb-4 border-bottom">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <a href="{{ url_for('perfil', user_id=review.usuario_id) }}" class="text-decoration-none">
+                                    <strong>{{ review.autor.nombre }}</strong>
+                                </a>
+                                <div class="text-muted small">
+                                    {{ review.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}
+                                </div>
+                            </div>
+
+                            <div class="rating">
+                                {% for i in range(1, 6) %}
+                                    <i class="fas fa-star {{ 'text-warning' if i <= review.calificacion else 'text-muted' }}"></i>
+                                {% endfor %}
+                                <span class="ms-1">{{ review.calificacion }}/5</span>
+                            </div>
+                        </div>
+
+                        {% if review.texto %}
+                        <p class="mb-2">{{ review.texto }}</p>
+                        {% endif %}
+
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-success me-2">
+                                <i class="fas fa-thumbs-up"></i> {{ review.likes }}
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-thumbs-down"></i> {{ review.dislikes }}
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Aún no hay reseñas</h5>
+                        <p class="text-muted">Sé el primero en reseñar este cómic.</p>
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('add_review', comic_id=comic.id) }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Escribir la primera reseña
+                        </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Estadísticas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-chart-bar"></i> Estadísticas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="stat-number">{{ reviews|length }}</div>
+                        <div class="stat-label">Reseñas</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-number">
+                            {% if comic.promedio_calificacion %}
+                                {{ "%.1f"|format(comic.promedio_calificacion) }}
+                            {% else %}
+                                0.0
+                            {% endif %}
+                        </div>
+                        <div class="stat-label">Promedio</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distribución de calificaciones -->
+        {% if reviews %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-chart-pie"></i> Calificaciones
+                </h6>
+            </div>
+            <div class="card-body">
+                {% for rating in range(5, 0, -1) %}
+                    {% set count = reviews|selectattr('calificacion', 'equalto', rating)|list|length %}
+                    {% set percentage = (count / reviews|length * 100)|round(1) %}
+                <div class="d-flex align-items-center mb-2">
+                    <span class="me-2">{{ rating }} <i class="fas fa-star text-warning"></i></span>
+                    <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: {{ percentage }}%"></div>
+                    </div>
+                    <span class="ms-2 small">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Acciones rápidas -->
+        {% if current_user.is_authenticated %}
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-bolt"></i> Acciones
+                </h6>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('add_review', comic_id=comic.id) }}" class="btn btn-primary w-100 mb-2">
+                    <i class="fas fa-plus"></i> Escribir Reseña
+                </a>
+                <button class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-bookmark"></i> Guardar
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

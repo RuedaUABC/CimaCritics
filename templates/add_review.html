@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-star"></i> Reseñar: {{ comic.titulo }}
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <!-- Información del cómic -->
+                <div class="comic-info mb-4 p-3 bg-light rounded">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            {% if comic.imagen_url %}
+                            <img src="{{ comic.imagen_url }}" class="img-fluid rounded" alt="{{ comic.titulo }}" style="max-height: 100px;">
+                            {% else %}
+                            <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="height: 100px;">
+                                <i class="fas fa-book fa-2x text-white"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <h5>{{ comic.titulo }}</h5>
+                            <p class="mb-1"><strong>Autor:</strong> {{ comic.autor }}</p>
+                            <p class="mb-1"><strong>Editorial:</strong> {{ comic.editorial }}</p>
+                            <p class="mb-0"><strong>Género:</strong> {{ comic.genero }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de reseña -->
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-star text-warning"></i> Calificación
+                        </label>
+                        <div class="rating-stars mb-2">
+                            {% for i in range(1, 6) %}
+                            <input type="radio" id="star{{ i }}" name="calificacion" value="{{ i }}" class="d-none" {% if form.calificacion.data == i %}checked{% endif %}>
+                            <label for="star{{ i }}" class="star-label">
+                                <i class="far fa-star"></i>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">Haz clic en las estrellas para calificar</small>
+
+                        {% if form.calificacion.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.calificacion.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.texto.label(class="form-label fw-bold") }}
+                        {{ form.texto(class="form-control" + (" is-invalid" if form.texto.errors else ""), rows=6, placeholder="Comparte tu opinión sobre este cómic...") }}
+                        {% if form.texto.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.texto.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">Máximo 1000 caracteres</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star-label');
+    const ratingInput = document.querySelector('input[name="calificacion"]');
+
+    stars.forEach((star, index) => {
+        star.addEventListener('click', function() {
+            // Reset all stars
+            stars.forEach(s => s.querySelector('i').className = 'far fa-star');
+
+            // Fill clicked star and previous ones
+            for (let i = 0; i <= index; i++) {
+                stars[i].querySelector('i').className = 'fas fa-star';
+            }
+
+            // Set rating value
+            document.querySelector(`#star${index + 1}`).checked = true;
+        });
+    });
+
+    // Initialize current rating
+    const currentRating = {{ form.calificacion.data or 0 }};
+    if (currentRating > 0) {
+        for (let i = 0; i < currentRating; i++) {
+            stars[i].querySelector('i').className = 'fas fa-star';
+        }
+    }
+});
+</script>
+{% endblock %}
