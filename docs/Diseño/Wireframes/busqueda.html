@@ -5,70 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda - CimaCritics</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
-        header { display: flex; justify-content: space-between; align-items: center; background-color: #333; color: white; padding: 10px 20px; }
-        .search { margin: 20px 0; }
-        .search input { width: 300px; padding: 10px; }
-        .search button { padding: 10px; }
-        .filters { margin: 20px 0; }
-        .filters select { padding: 5px; margin-right: 10px; }
-        .results { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
-        .comic-card { border: 1px solid #ddd; padding: 10px; background-color: white; width: 200px; text-align: center; }
-        .comic-card img { width: 100%; height: 150px; background-color: #ccc; }
-        .pagination { text-align: center; margin-top: 20px; }
+        :root{--page-bg:#2b2b2b;--card:#ffffff;--muted:#444;--text:#111}
+        body { font-family: Arial, sans-serif; margin: 0; padding: 16px; background-color: var(--page-bg); color:var(--text);}
+        header { display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;background:transparent;color:#fff;padding:12px 16px }
+        header .brand{display:flex;align-items:center;gap:12px}
+        header nav a{color:#fff;margin-left:12px;text-decoration:none;filter:grayscale(100%)}
+        .container{max-width:1100px;margin:18px auto}
+        .search-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+        .search { flex:1; display:flex; gap:8px }
+        .search input{flex:1;padding:10px;border-radius:6px;border:1px solid #999;background:#fff}
+        .search button{padding:10px 14px;border-radius:6px;border:1px solid #999;background:#fff;color:#000}
+        .cta-write{background:#fff;color:#000;padding:8px 12px;border-radius:6px;border:1px solid #999}
+        .filters{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+        .filters label{font-size:0.95rem;color:#ddd}
+        .filters select{padding:6px;border-radius:4px;border:1px solid #999;margin-left:6px;background:#fff;color:#000}
+        .results-meta{margin-top:12px;font-weight:600;color:#fff}
+        .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:14px}
+        .comic-card{background:var(--card);border:1px solid #999;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
+        .cover{width:100%;background:#fff;border:2px dashed #999;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;aspect-ratio:8.5/11}
+        .cover img{width:100%;height:auto;object-fit:contain;display:block}
+        .meta{display:flex;justify-content:space-between;align-items:center}
+        .title{font-size:1rem;font-weight:700;margin:0;color:#000}
+        .author{color:#444;font-size:0.9rem;margin:0}
+        .stars{color:#000;font-weight:700}
+        .rating{display:flex;align-items:center;gap:6px}
+        .badge{background:#fff;padding:4px 8px;border-radius:12px;font-size:0.85rem;color:#000}
+        .card-actions{display:flex;gap:8px;margin-top:auto}
+        .btn{flex:1;padding:8px;border-radius:6px;border:1px solid #999;background:#fff;color:#000}
+        .btn.primary{background:#fff;color:#000;border:1px solid #666}
+        .pagination{text-align:center;margin-top:18px}
+        .pagination button{margin:0 4px;padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff}
+        /* Accessibility focus */
+        a:focus,button:focus,input:focus{outline:3px solid #9fd3ff;outline-offset:2px}
+        /* Responsive tweaks */
+        @media (max-width:600px){.search input{min-width:140px}.filters{gap:8px}.container{padding:0 8px}}
     </style>
 </head>
 <body>
     <header>
-        <h1>CimaCritics</h1>
+        <div class="brand">
+            <h1 style="margin:0;font-size:1.1rem">CimaCritics</h1>
+            <span style="font-size:0.9rem;color:#bbb">Reseñas y valoraciones de cómics</span>
+        </div>
         <nav>
-            <a href="#" style="color: white;">Login</a>
+            <a href="#">Explorar</a>
+            <a href="#">Mis listas</a>
+            <a href="#">Perfil</a>
+            <a href="#">Login</a>
         </nav>
     </header>
-    
-    <main>
-        <div class="search">
-            <input type="text" placeholder="Buscar...">
-            <button>🔍</button>
+    <div class="container">
+        <div class="search-row">
+            <form class="search" role="search" aria-label="Buscar cómics">
+                <label for="q" class="visually-hidden">Buscar</label>
+                <input id="q" name="q" type="search" placeholder="Buscar título, autor o editorial" aria-label="Buscar cómics">
+                <button type="submit" aria-label="Buscar">🔍</button>
+            </form>
+            <button class="cta-write" title="Escribir reseña">Escribir reseña</button>
         </div>
-        
-        <div class="filters">
-            <label>Género: <select><option>Todos</option></select></label>
-            <label>Editorial: <select><option>Todos</option></select></label>
-            <label>Año: <select><option>Todos</option></select></label>
+
+        <div class="filters" role="region" aria-label="Filtros de búsqueda">
+            <label>Género:<select aria-label="Filtrar por género"><option>Todos</option></select></label>
+            <label>Editorial:<select aria-label="Filtrar por editorial"><option>Todos</option></select></label>
+            <label>Año:<select aria-label="Filtrar por año"><option>Todos</option></select></label>
+            <label>Ordenar:<select aria-label="Ordenar resultados"><option>Más relevantes</option><option>Más valorados</option><option>Más recientes</option></select></label>
         </div>
-        
-        <p>Resultados (15 encontrados):</p>
-        
-        <div class="results">
-            <div class="comic-card">
-                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
-                <h4>Cómic A</h4>
-                <p>Autor 1</p>
-                <p>★★★★☆ (4.1)</p>
-            </div>
-            <div class="comic-card">
-                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
-                <h4>Cómic B</h4>
-                <p>Autor 2</p>
-                <p>★★★★☆ (3.8)</p>
-            </div>
-            <div class="comic-card">
-                <div style="background-color: #ccc; height: 150px; margin-bottom: 10px;"></div>
-                <h4>Cómic C</h4>
-                <p>Autor 3</p>
-                <p>★★★★☆ (4.3)</p>
-            </div>
+
+        <p class="results-meta">Resultados <span class="badge">15 encontrados</span></p>
+
+        <section class="results" aria-live="polite">
+            <article class="comic-card" role="article" aria-label="Cómic A - Autor 1">
+                <div class="cover" aria-hidden="true"><span style="color:#999;font-size:0.9rem;">Portada (tamaño carta)</span></div>
+                <div>
+                    <p class="title">Cómic A</p>
+                    <p class="author">Autor 1 · Editorial X</p>
+                </div>
+                <div class="meta">
+                    <div class="rating" aria-label="Puntuación 4.1 de 5">
+                        <span class="stars" aria-hidden="true">★★★★☆</span>
+                        <span style="color:var(--muted);font-size:0.95rem">4.1</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--muted)">123 reseñas</div>
+                </div>
+            </article>
+
+            <article class="comic-card" role="article" aria-label="Cómic B - Autor 2">
+                <div class="cover" aria-hidden="true"><span style="color:#999;font-size:0.9rem;">Portada (tamaño carta)</span></div>
+                <div>
+                    <p class="title">Cómic B</p>
+                    <p class="author">Autor 2 · Editorial Y</p>
+                </div>
+                <div class="meta">
+                    <div class="rating" aria-label="Puntuación 3.8 de 5">
+                        <span class="stars" aria-hidden="true">★★★☆☆</span>
+                        <span style="color:var(--muted);font-size:0.95rem">3.8</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--muted)">56 reseñas</div>
+                </div>
+            </article>
+
+            <article class="comic-card" role="article" aria-label="Cómic C - Autor 3">
+                <div class="cover" aria-hidden="true"><span style="color:#999;font-size:0.9rem;">Portada (tamaño carta)</span></div>
+                <div>
+                    <p class="title">Cómic C</p>
+                    <p class="author">Autor 3 · Editorial Z</p>
+                </div>
+                <div class="meta">
+                    <div class="rating" aria-label="Puntuación 4.3 de 5">
+                        <span class="stars" aria-hidden="true">★★★★☆</span>
+                        <span style="color:var(--muted);font-size:0.95rem">4.3</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--muted)">89 reseñas</div>
+                </div>
+            </article>
+        </section>
+
+        <div class="pagination" role="navigation" aria-label="Paginación de resultados">
+            <button aria-label="Página 1">1</button>
+            <button aria-label="Página 2">2</button>
+            <button aria-label="Página 3">3</button>
+            <span aria-hidden="true">...</span>
+            <button aria-label="Página 15">15</button>
+            <button aria-label="Siguiente página">Siguiente &gt;</button>
         </div>
-        
-        <div class="pagination">
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-            <span>...</span>
-            <button>15</button>
-            <button>Siguiente ></button>
-        </div>
-    </main>
+    </div>
 </body>
 </html>

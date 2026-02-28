@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CimaCritics</title>
+    <style>
+        :root{--page-bg:#2b2b2b;--card:#fff;--muted:#444;--text:#111}
+        body{font-family:Arial,sans-serif;margin:0;padding:16px;background:var(--page-bg);color:var(--text)}
+        header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+        header h1{color:#fff}
+        nav a{color:#fff;margin-right:12px;filter:grayscale(100%);text-decoration:none}
+        .container{max-width:1200px;margin:24px auto}
+        .stats{display:flex;flex-wrap:wrap;gap:16px}
+        .stat{background:#fff;border:1px solid #999;padding:16px;border-radius:8px;flex:1;min-width:200px;text-align:center}
+        .stat h3{margin:0;color:#000}
+        .table-wrapper{margin-top:24px;background:#fff;border:1px solid #999;border-radius:8px;padding:16px}
+        table{width:100%;border-collapse:collapse}
+        th,td{border:1px solid #999;padding:8px;text-align:left;color:#000}
+        th{background:#f4f4f4}
+        .actions button{padding:4px 8px;margin-right:4px;border:1px solid #999;background:#fff;color:#000;border-radius:4px}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <a href="#">Inicio</a>
+            <a href="#">Usuarios</a>
+            <a href="#">Cómics</a>
+            <a href="#">Salir</a>
+        </nav>
+    </header>
+    <div class="container">
+        <section class="stats">
+            <div class="stat"><h3>1,234 Usuarios</h3></div>
+            <div class="stat"><h3>567 Cómics</h3></div>
+            <div class="stat"><h3>8,901 Reseñas</h3></div>
+        </section>
+        <section class="table-wrapper">
+            <h2>Cómics recientes</h2>
+            <table>
+                <thead><tr><th>ID</th><th>Título</th><th>Editorial</th><th>Año</th><th>Acciones</th></tr></thead>
+                <tbody>
+                    <tr><td>123</td><td>Ejemplo 1</td><td>X</td><td>2024</td><td class="actions"><button>Editar</button><button>Eliminar</button></td></tr>
+                    <tr><td>124</td><td>Ejemplo 2</td><td>Y</td><td>2023</td><td class="actions"><button>Editar</button><button>Eliminar</button></td></tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

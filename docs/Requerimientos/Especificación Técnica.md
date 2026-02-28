@@ -100,7 +100,42 @@ Frontend (HTML/CSS/JS) ←→ API REST (Flask) ←→ Base de Datos (SQLAlchemy)
 }
 ```
 
-## 3.5 Sistema de Recomendaciones
+## 3.5 Frontend - Interfaz de Usuario
+
+### Dise\u00f1o Visual
+- **Prototipo**: Wireframes HTML/CSS interactivos en `docs/Dise\u00f1o/Wireframes.md`
+- **Paleta B/N**: Blanco-Negro-Gris (sin colores)
+  - Fondo: `#2b2b2b` (gris oscuro)
+  - Tarjetas: `#ffffff` (blanco)
+  - Bordes: `#999999` (gris medio)
+- **Tipograf\u00eda**: Arial, sans-serif
+- **Responsive**: Mobile-first, grid autoadaptable
+
+### Componentes Est\u00e1ndar
+- **Placeholders Portada**: Aspect ratio 8.5/11 (carta)
+- **Botones**: Estilo B/N, sin relleno de color
+- **Campos**: Inputs de texto con borde gris
+- **Tarjetas C\u00f3mic**: Grid responsive, 200px min-width
+- **Forms Multi-entry**: Escritores, dibujantes, editoriales (individual)
+
+### Accesibilidad
+- ARIA labels en inputs y botones
+- Focus visible (outline 3px)
+- Roles HTML5 sem\u00e1nticos
+- Soporte pantalla peque\u00f1a (\u22646px ancho)
+
+### Wireframes Disponibles
+1. **Login** - Formulario de acceso
+2. **Registro** - Crear cuenta
+3. **Inicio** - P\u00e1gina de bienvenida
+4. **B\u00fasqueda** - Listado con filtros
+5. **Detalles** - Info de c\u00f3mic + rese\u00f1as
+6. **Perfil** - Mi perfil + mis rese\u00f1as
+7. **Rese\u00f1a (Form)** - Crear/editar rese\u00f1a
+8. **Admin Dashboard** - Vista general admin
+9. **Admin Entry** - Agregar/editar c\u00f3mic
+
+## 3.6 Sistema de Recomendaciones
 - **Algoritmos**:
   - **Filtrado Colaborativo**: Usar librerías como Surprise o scikit-learn para calcular similitudes entre usuarios o ítems basados en calificaciones.
   - **Basado en Contenido**: Análisis de texto en descripciones y metadatos usando TF-IDF o embeddings (e.g., con spaCy o transformers).

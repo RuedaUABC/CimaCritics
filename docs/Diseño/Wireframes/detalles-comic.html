@@ -5,22 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de Cómic - CimaCritics</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
-        header { display: flex; justify-content: space-between; align-items: center; background-color: #333; color: white; padding: 10px 20px; }
-        .comic-details { display: flex; gap: 20px; margin-top: 20px; }
-        .comic-image { width: 200px; height: 300px; background-color: #ccc; }
-        .info { flex: 1; }
-        .reviews { margin-top: 20px; }
-        .review { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background-color: white; }
-        .review-actions { margin-top: 10px; }
+        :root{--page-bg:#2b2b2b;--card:#fff;--muted:#444;--text:#111}
+        body { font-family: Arial, sans-serif; margin: 0; padding: 16px; background-color: var(--page-bg); color:var(--text);}
+        header { display:flex;justify-content:space-between;align-items:center;background:transparent;color:#fff;padding:12px 16px }
+        header a{color:#fff;filter:grayscale(100%);text-decoration:none}
+        .container{max-width:900px;margin:18px auto}
+        .comic-details { display:flex;flex-wrap:wrap;gap:20px;margin-top:20px }
+        .comic-image{width:200px;background:#fff;border:2px dashed #999;aspect-ratio:8.5/11;display:flex;align-items:center;justify-content:center}
+        .comic-image span{color:#999;font-size:0.9rem}
+        .info{flex:1;color:#000}
+        .info h2{margin-top:0}
+        .reviews{margin-top:20px}
+        .review{border:1px solid #999;padding:10px;margin-bottom:10px;background:#fff}
+        .review-actions{margin-top:10px}
+        button, .review-actions button{background:#fff;color:#000;border:1px solid #999;padding:6px 12px;border-radius:4px}
     </style>
 </head>
 <body>
     <header>
-        <a href="#" style="color: white;">← Volver</a>
+        <a href="#">← Volver</a>
         <nav>
-            <a href="#" style="color: white; margin-right: 10px;">Login</a>
-            <a href="#" style="color: white;">Registro</a>
+            <a href="#" style="margin-right: 10px;">Login</a>
+            <a href="#">Registro</a>
         </nav>
     </header>
     

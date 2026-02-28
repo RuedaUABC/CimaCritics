@@ -51,8 +51,42 @@ Esta especificación define las funcionalidades principales que debe tener la pl
 - **Perfil de Usuario**: Página personal con reseñas, estadísticas, lista de seguidores/seguidores
 - **API Pública**: Endpoints para integración con otras plataformas (opcional)
 
+## 5. Flujos de Usuario y Wireframes
+
+### 5.1 Flujo de Acceso
+1. Usuario anónimo llega a **Login** (login.html)
+   - Ingresa email/usuario y contraseña
+   - O puede crear cuenta en **Registro** (registro.html)
+2. Nueva cuenta:
+   - Usuario ingresa usuario, email, contraseña
+   - Redirecciona a **Inicio** (pagina-inicio.html)
+
+### 5.2 Flujo Principal (Usuario Autenticado)
+1. **Inicio** (pagina-inicio.html) - Bienvenida con cómics destacados
+2. **Búsqueda** (busqueda.html) - Buscar, filtrar, ver catálogo
+3. **Detalles** (detalles-comic.html) - Ver info del cómic + reseñas
+4. **Crear Reseña** (formulario-resena.html) - Calificar y escribir opinión
+5. **Perfil** (perfil-usuario.html) - Ver mis reseñas y datos
+
+### 5.3 Flujo Administrador
+1. **Admin Dashboard** (admin-dashboard.html) - Vista general, estadísticas
+2. **Admin Entry** (admin-entry.html) - Agregar/editar cómic con:
+   - Múltiples escritores
+   - Múltiples dibujantes
+   - Múltiples editoriales
+   - Descripción, año, género, portada
+
+### 5.4 Diseño Visual
+Todos los wireframes implementan un **sistema de diseño Blanco/Negro**:
+- Fondo gris oscuro (#2b2b2b)
+- Tarjetas en blanco (#ffffff)
+- Bordes en gris (#999999)
+- Accesibilidad WCAG (ARIA labels, focus visible)
+- Responsive mobile-first
+
+Documentación: `docs/Diseño/Sistema de Diseño.md`
+
 ## 4. Requisitos No Funcionales
-- **Usabilidad**: Interfaz intuitiva, responsive para móviles y desktop, navegación clara
 - **Rendimiento**: Carga rápida (< 2s para páginas principales), soporte para al menos 1000 usuarios concurrentes
 - **Seguridad**: Autenticación robusta, protección contra ataques comunes (SQL injection, XSS), encriptación de datos sensibles
 - **Accesibilidad**: Cumplir estándares WCAG 2.1 AA

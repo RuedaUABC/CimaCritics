@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - CimaCritics</title>
+    <style>
+        :root{--page-bg:#2b2b2b;--card:#fff;--muted:#444;--text:#111}
+        body{font-family:Arial,sans-serif;margin:0;padding:16px;background:var(--page-bg);color:var(--text)}
+        header{display:flex;justify-content:center;padding:12px 0}
+        header h1{color:#fff}
+        .form-wrapper{max-width:400px;margin:40px auto;background:#fff;padding:24px;border:1px solid #999;border-radius:8px}
+        label{display:block;margin-bottom:8px;color:#000}
+        input[type=text],input[type=email],input[type=password]{width:100%;padding:10px;border:1px solid #999;border-radius:4px;margin-bottom:16px}
+        button{width:100%;padding:10px;border:1px solid #999;border-radius:4px;background:#fff;color:#000}
+        .links{margin-top:12px;text-align:center}
+        .links a{color:#444;text-decoration:none;filter:grayscale(100%)}
+    </style>
+</head>
+<body>
+    <header><h1>CimaCritics</h1></header>
+    <main>
+        <div class="form-wrapper">
+            <h2>Registro</h2>
+            <form>
+                <label for="user">Usuario</label>
+                <input type="text" id="user" name="user">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+                <label for="pass">Contraseña</label>
+                <input type="password" id="pass" name="pass">
+                <button type="submit">Crear cuenta</button>
+            </form>
+            <div class="links">
+                <a href="login.html">¿Ya tienes cuenta? Inicia sesión</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

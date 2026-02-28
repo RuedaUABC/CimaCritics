@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Reseña - CimaCritics</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
-        .form-container { max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border: 1px solid #ddd; }
+        :root{--page-bg:#2b2b2b;--card:#fff;--muted:#444;--text:#111}
+        body { font-family: Arial, sans-serif; margin: 0; padding: 16px; background-color: var(--page-bg); color:var(--text);}
+        .form-container { max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border: 1px solid #999; }
         .rating { margin: 20px 0; }
         .rating input { display: none; }
-        .rating label { font-size: 30px; color: #ddd; cursor: pointer; }
-        .rating input:checked ~ label { color: #ffca08; }
-        .rating label:hover, .rating label:hover ~ label { color: #ffca08; }
-        textarea { width: 100%; height: 150px; padding: 10px; margin: 10px 0; }
+        .rating label { font-size: 30px; color: #999; cursor: pointer; }
+        .rating input:checked ~ label { color: #000; }
+        .rating label:hover, .rating label:hover ~ label { color: #000; }
+        textarea { width: 100%; height: 150px; padding: 10px; margin: 10px 0; border:1px solid #999; }
         .buttons { text-align: center; margin-top: 20px; }
-        .buttons button { padding: 10px 20px; margin: 0 10px; }
+        .buttons button { padding: 10px 20px; margin: 0 10px; background:#fff;color:#000;border:1px solid #999; }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h2>Crear Reseña - Título del Cómic</h2>
         
-        <div class="rating">
+        <div class="rating" aria-label="Calificar con estrellas">
             <span>Calificación:</span>
             <input type="radio" id="star5" name="rating" value="5"><label for="star5">☆</label>
             <input type="radio" id="star4" name="rating" value="4"><label for="star4">☆</label>

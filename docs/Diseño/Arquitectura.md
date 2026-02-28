@@ -118,7 +118,45 @@ Seis modelos principales implementados:
 - Constraints de integridad referencial
 - Validación de formularios con WTForms
 
-## 5. Base de Datos
+## 5. Diseño de Interfaz (UI/UX)
+
+### Enfoque de Wireframing
+El proyecto utiliza **wireframes HTML/CSS** interactivos como prototipo de diseño. Est​a aproximación permite:
+- Visualización rápida sin herramientas externas
+- Testing en navegadores reales
+- Fácil iteración y versionado en Git
+- Base para desarrollo front-end
+
+### Sistema de Diseño Implementado
+
+**Paleta Cromática (B/N - Blanco y Negro)**
+- Fondo: `#2b2b2b` (gris oscuro)
+- Foreground: `#ffffff` (blanco)
+- Bordes: variantes de gris
+
+**Typography**
+- Font Stack: Arial, sans-serif
+- Interfaz accesible y legible
+- Jerarquía mediante font-weight
+
+**Componentes Estándar**
+- Placeholders carta (8.5×11)
+- Botones B/N sin color
+- Multi-entry fields en forms
+- Grid responsivo (auto-fill)
+
+### Wireframes Disponibles
+Ver [Wireframes.md](Wireframes.md) para lista completa y detalles de diseño.
+
+### Accesibilidad
+- ARIA labels en puntos de entrada
+- Focus styles visibles
+- Roles HTML5 semánticos
+- Responsive mobile-first (≤600px)
+
+---
+
+## 6. Base de Datos
 
 ### Esquema Actual
 ```sql
