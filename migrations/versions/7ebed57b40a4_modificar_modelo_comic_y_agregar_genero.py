@@ -1,8 +1,8 @@
-"""Crear modelos Usuario, Comic, Review, Seguimiento, Reporte, Comentario
+"""Modificar modelo Comic y agregar Genero
 
-Revision ID: 9900d106027a
+Revision ID: 7ebed57b40a4
 Revises: 
-Create Date: 2026-02-17 07:59:22.628450
+Create Date: 2026-03-09 00:42:11.176355
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9900d106027a'
+revision = '7ebed57b40a4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,15 +21,21 @@ def upgrade():
     op.create_table('comic',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('titulo', sa.String(length=128), nullable=False),
-    sa.Column('autor', sa.String(length=64), nullable=False),
-    sa.Column('año', sa.Integer(), nullable=True),
+    sa.Column('escritor', sa.String(length=64), nullable=False),
+    sa.Column('dibujante', sa.String(length=64), nullable=False),
+    sa.Column('lanzamiento', sa.String(length=32), nullable=True),
     sa.Column('editorial', sa.String(length=64), nullable=True),
-    sa.Column('genero', sa.String(length=32), nullable=True),
     sa.Column('descripcion', sa.Text(), nullable=True),
     sa.Column('imagen_url', sa.String(length=256), nullable=True),
     sa.Column('fecha_creacion', sa.DateTime(), nullable=True),
     sa.Column('promedio_calificacion', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('genero',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('nombre', sa.String(length=32), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('nombre')
     )
     op.create_table('usuario',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -45,6 +51,13 @@ def upgrade():
     sa.Column('siguiendo_count', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
+    )
+    op.create_table('comic_genero',
+    sa.Column('comic_id', sa.Integer(), nullable=False),
+    sa.Column('genero_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['comic_id'], ['comic.id'], ),
+    sa.ForeignKeyConstraint(['genero_id'], ['genero.id'], ),
+    sa.PrimaryKeyConstraint('comic_id', 'genero_id')
     )
     op.create_table('reporte',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -101,6 +114,8 @@ def downgrade():
     op.drop_table('seguimiento')
     op.drop_table('review')
     op.drop_table('reporte')
+    op.drop_table('comic_genero')
     op.drop_table('usuario')
+    op.drop_table('genero')
     op.drop_table('comic')
     # ### end Alembic commands ###

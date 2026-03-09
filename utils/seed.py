@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import db, app
-from models import Usuario, Comic, Review
+from models import Usuario, Comic, Review, Genero
 import random
 
 def seed_database():
@@ -28,18 +28,38 @@ def seed_database():
             usuarios.append(usuario)
             db.session.add(usuario)
 
+        # Crear y obtener géneros con tags
+        genero_names = ['Superhéroes', 'Autobiográfico', 'Fantasía', 'Drama', 'Historia']
+        generos_db = {}
+        for name in genero_names:
+            genero = Genero(nombre=name)
+            db.session.add(genero)
+            generos_db[name] = genero
+        
+        db.session.commit()
+
         # Crear cómics de ejemplo
         comics_data = [
-            {'titulo': 'Watchmen', 'autor': 'Alan Moore', 'año': 1986, 'editorial': 'DC Comics', 'genero': 'Superhéroes', 'descripcion': 'Una historia compleja sobre superhéroes retirados.'},
-            {'titulo': 'The Dark Knight Returns', 'autor': 'Frank Miller', 'año': 1986, 'editorial': 'DC Comics', 'genero': 'Superhéroes', 'descripcion': 'Batman regresa en una Gotham distópica.'},
-            {'titulo': 'Maus', 'autor': 'Art Spiegelman', 'año': 1991, 'editorial': 'Pantheon Books', 'genero': 'Autobiográfico', 'descripcion': 'Historia del Holocausto contada con animales.'},
-            {'titulo': 'Sandman', 'autor': 'Neil Gaiman', 'año': 1989, 'editorial': 'DC Comics', 'genero': 'Fantasía', 'descripcion': 'Las aventuras del Señor de los Sueños.'},
-            {'titulo': 'Persepolis', 'autor': 'Marjane Satrapi', 'año': 2000, 'editorial': 'Pantheon Books', 'genero': 'Autobiográfico', 'descripcion': 'Memorias de una niña en la Revolución Iraní.'}
+            {'titulo': 'Watchmen', 'escritor': 'Alan Moore', 'dibujante': 'Dave Gibbons', 'lanzamiento': '1986', 'editorial': 'DC Comics', 'generos': ['Superhéroes', 'Drama'], 'descripcion': 'Una historia compleja sobre superhéroes retirados.'},
+            {'titulo': 'The Dark Knight Returns', 'escritor': 'Frank Miller', 'dibujante': 'Frank Miller', 'lanzamiento': '1986', 'editorial': 'DC Comics', 'generos': ['Superhéroes'], 'descripcion': 'Batman regresa en una Gotham distópica.'},
+            {'titulo': 'Maus', 'escritor': 'Art Spiegelman', 'dibujante': 'Art Spiegelman', 'lanzamiento': '1991', 'editorial': 'Pantheon Books', 'generos': ['Autobiográfico', 'Historia'], 'descripcion': 'Historia del Holocausto contada con animales.'},
+            {'titulo': 'Sandman', 'escritor': 'Neil Gaiman', 'dibujante': 'Sam Kieth', 'lanzamiento': '1989', 'editorial': 'DC Comics', 'generos': ['Fantasía'], 'descripcion': 'Las aventuras del Señor de los Sueños.'},
+            {'titulo': 'Persepolis', 'escritor': 'Marjane Satrapi', 'dibujante': 'Marjane Satrapi', 'lanzamiento': '2000', 'editorial': 'Pantheon Books', 'generos': ['Autobiográfico', 'Historia'], 'descripcion': 'Memorias de una niña en la Revolución Iraní.'}
         ]
 
         comics = []
         for data in comics_data:
-            comic = Comic(**data)
+            comic = Comic(
+                titulo=data['titulo'],
+                escritor=data['escritor'],
+                dibujante=data['dibujante'],
+                lanzamiento=data['lanzamiento'],
+                editorial=data['editorial'],
+                descripcion=data['descripcion']
+            )
+            for g_name in data['generos']:
+                comic.generos.append(generos_db[g_name])
+
             comics.append(comic)
             db.session.add(comic)
 

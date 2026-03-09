@@ -33,14 +33,28 @@ class Usuario(UserMixin, db.Model):
     def __repr__(self):
         return f'<Usuario {self.nombre}>'
 
+# Tabla de asociación para la relación muchos-a-muchos entre Comic y Genero
+comic_genero = db.Table('comic_genero',
+    db.Column('comic_id', db.Integer, db.ForeignKey('comic.id'), primary_key=True),
+    db.Column('genero_id', db.Integer, db.ForeignKey('genero.id'), primary_key=True)
+)
+
+class Genero(db.Model):
+    __tablename__ = 'genero'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(32), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Genero {self.nombre}>'
+
 class Comic(db.Model):
     __tablename__ = 'comic'
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(128), nullable=False)
-    autor = db.Column(db.String(64), nullable=False)
-    año = db.Column(db.Integer)
+    escritor = db.Column(db.String(64), nullable=False)
+    dibujante = db.Column(db.String(64), nullable=False)
+    lanzamiento = db.Column(db.String(32))
     editorial = db.Column(db.String(64))
-    genero = db.Column(db.String(32))
     descripcion = db.Column(db.Text)
     imagen_url = db.Column(db.String(256))
     fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
@@ -48,6 +62,8 @@ class Comic(db.Model):
 
     # Relaciones
     reviews = db.relationship('Review', backref='comic', lazy='dynamic')
+    generos = db.relationship('Genero', secondary=comic_genero, lazy='subquery',
+        backref=db.backref('comics', lazy=True))
 
     def __repr__(self):
         return f'<Comic {self.titulo}>'
