@@ -1,0 +1,19 @@
+// Mapa de pantallas CimaCritics
+digraph {
+	rankdir=LR size=8
+	index [label=index image="index.png" shape=rect]
+	comics [label=comics image="comics.png" shape=rect]
+	comic_detail [label=comic_detail image="comic_detail.png" shape=rect]
+	perfil [label=perfil image="perfil.png" shape=rect]
+	admin_dashboard [label=admin_dashboard image="admin_dashboard.png" shape=rect]
+	add_comic [label=add_comic image="add_comic.png" shape=rect]
+	logout [label=logout image="logout.png" shape=rect]
+	register [label=register image="register.png" shape=rect]
+	index -> comics
+	comics -> comic_detail
+	comic_detail -> perfil
+	index -> admin_dashboard
+	admin_dashboard -> add_comic
+	index -> register
+	index -> logout
+}
