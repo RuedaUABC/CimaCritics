@@ -75,48 +75,82 @@
     </div>
 </div>
 
-<div class="row">
-    {% for comic in comics %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            {% if comic.imagen_url %}
-            <img src="{{ comic.imagen_url }}" class="card-img-top" alt="{{ comic.titulo }}" style="height: 200px; object-fit: cover;">
-            {% else %}
-            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                <i class="fas fa-book fa-3x text-white"></i>
+<div class="row position-relative">
+    <div class="col-12 px-5">
+        <div id="featuredComicsCarousel" class="carousel slide pb-5" data-bs-ride="carousel">
+            <!-- Indicators -->
+            <div class="carousel-indicators" style="bottom: -10px;">
+                {% for batch in comics|batch(3, fill_with=None) %}
+                <button type="button" data-bs-target="#featuredComicsCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ loop.index }}"></button>
+                {% endfor %}
             </div>
-            {% endif %}
 
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ comic.titulo }}</h5>
-                <p class="card-text text-muted mb-2 small">
-                    <strong>Escritor:</strong> {{ comic.escritor }}<br>
-                    <strong>Dibujante:</strong> {{ comic.dibujante }}<br>
-                    <strong>Editorial:</strong> {{ comic.editorial }}<br>
-                    <strong>Lanzamiento:</strong> {{ comic.lanzamiento }}<br>
-                    <span class="mt-2 d-inline-block">
-                        <strong>Géneros:</strong> 
-                        {% for genero in comic.generos %}
-                            <span class="badge bg-secondary">{{ genero.nombre }}</span>
+            <!-- Carousel Items -->
+            <div class="carousel-inner">
+                {% for comic_batch in comics|batch(3, fill_with=None) %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="row gx-4">
+                        {% for comic in comic_batch %}
+                            {% if comic %}
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm border-0 transition-transform hover-scale">
+                                    {% if comic.imagen_url %}
+                                    <img src="{{ comic.imagen_url }}" class="card-img-top" alt="{{ comic.titulo }}" style="height: 250px; object-fit: cover;">
+                                    {% else %}
+                                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 250px;">
+                                        <i class="fas fa-book fa-4x text-white opacity-50"></i>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="card-body d-flex flex-column position-relative">
+                                        {% if comic.promedio_calificacion %}
+                                        <div class="position-absolute" style="top: -20px; right: 20px;">
+                                            <span class="badge bg-warning text-dark shadow-sm px-3 py-2 rounded-pill fs-6 border border-white border-2">
+                                                <i class="fas fa-star text-white me-1"></i> {{ "%.1f"|format(comic.promedio_calificacion) }}
+                                            </span>
+                                        </div>
+                                        {% endif %}
+
+                                        <h5 class="card-title fw-bold mt-2 mb-3">{{ comic.titulo }}</h5>
+                                        <div class="card-text text-muted mb-3 small flex-grow-1">
+                                            <div class="mb-1"><i class="fas fa-pen-nib text-secondary me-2" style="width:15px;"></i>{{ comic.escritor }}</div>
+                                            <div class="mb-1"><i class="fas fa-pencil-ruler text-secondary me-2" style="width:15px;"></i>{{ comic.dibujante or 'N/A' }}</div>
+                                            <div class="mb-2"><i class="fas fa-building text-secondary me-2" style="width:15px;"></i>{{ comic.editorial or 'N/A' }}</div>
+                                            
+                                            <div class="mt-3">
+                                                {% for genero in comic.generos %}
+                                                    <span class="badge bg-light text-dark border me-1 mb-1">{{ genero.nombre }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-outline-primary mt-auto w-100 rounded-pill">
+                                            Leer más <i class="fas fa-arrow-right ms-2 fs-7"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <!-- Blank space to maintain grid alignment on the last slide if not multiple of 3 -->
+                            <div class="col-md-4 d-none d-md-block"></div>
+                            {% endif %}
                         {% endfor %}
-                    </span>
-                </p>
-
-                {% if comic.promedio_calificacion %}
-                <div class="mb-2">
-                    <span class="badge bg-warning text-dark">
-                        <i class="fas fa-star"></i> {{ "%.1f"|format(comic.promedio_calificacion) }}
-                    </span>
+                    </div>
                 </div>
-                {% endif %}
-
-                <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-primary mt-auto">
-                    <i class="fas fa-eye"></i> Ver Detalles
-                </a>
+                {% endfor %}
             </div>
+
+            <!-- Controls (Overlay outside content) -->
+            <button class="carousel-control-prev text-primary overflow-visible" type="button" data-bs-target="#featuredComicsCarousel" data-bs-slide="prev" style="width: auto; left: -50px; filter: invert(0);">
+                <i class="fas fa-chevron-left fa-2x shadow-sm bg-white rounded-circle p-2 border"></i>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next text-primary overflow-visible" type="button" data-bs-target="#featuredComicsCarousel" data-bs-slide="next" style="width: auto; right: -50px; filter: invert(0);">
+                <i class="fas fa-chevron-right fa-2x shadow-sm bg-white rounded-circle p-2 border"></i>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
-    {% endfor %}
 </div>
 
 <div class="row">

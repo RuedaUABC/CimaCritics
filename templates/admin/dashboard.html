@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2><i class="fas fa-chart-line text-primary border rounded p-2 bg-light me-2"></i> Dashboard de Administración
+        </h2>
+    </div>
+
+    <!-- Estadísticas Globales -->
+    <div class="row text-center mb-5">
+        <!-- Usuarios -->
+        <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card shadow-sm h-100 border-primary border-top border-4">
+                <div class="card-body">
+                    <h5 class="card-title text-muted text-uppercase mb-3">Usuarios</h5>
+                    <p class="display-5 fw-bold text-primary mb-0">
+                        <i class="fas fa-users me-2 opacity-50"></i>{{ total_usuarios }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cómics -->
+        <div class="col-md-4 mb-3 mb-md-0">
+            <div class="card shadow-sm h-100 border-success border-top border-4">
+                <div class="card-body">
+                    <h5 class="card-title text-muted text-uppercase mb-3">Cómics en Catálogo</h5>
+                    <p class="display-5 fw-bold text-success mb-0">
+                        <i class="fas fa-book-open me-2 opacity-50"></i>{{ total_comics }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reseñas -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-warning border-top border-4">
+                <div class="card-body">
+                    <h5 class="card-title text-muted text-uppercase mb-3">Reseñas Publicadas</h5>
+                    <p class="display-5 fw-bold text-warning mb-0">
+                        <i class="fas fa-comments me-2 opacity-50"></i>{{ total_reviews }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Cómics Recientes -->
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0"><i class="fas fa-clock me-2"></i> Cómics Recientemente Agregados</h5>
+            <a href="{{ url_for('add_comic') }}" class="btn btn-sm btn-outline-light">
+                <i class="fas fa-plus"></i> Agregar Cómic
+            </a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-light text-muted">
+                        <tr>
+                            <th scope="col" class="ps-4">ID</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Escritor</th>
+                            <th scope="col">Dibujante</th>
+                            <th scope="col">Editorial</th>
+                            <th scope="col">Lanzamiento</th>
+                            <th scope="col" class="text-center pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if comics_recientes %}
+                        {% for comic in comics_recientes %}
+                        <tr>
+                            <td class="ps-4 text-muted">#{{ comic.id }}</td>
+                            <td class="fw-bold">{{ comic.titulo }}</td>
+                            <td>{{ comic.escritor }}</td>
+                            <td>{{ comic.dibujante or 'N/A' }}</td>
+                            <td><span class="badge bg-secondary">{{ comic.editorial or 'N/A' }}</span></td>
+                            <td>{{ comic.lanzamiento or 'N/A' }}</td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('comic_detail', comic_id=comic.id) }}"
+                                        class="btn btn-outline-primary" title="Ver detalle">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-warning" title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <i class="fas fa-folder-open fs-3 mb-2 d-block"></i>
+                                No hay cómics en el sistema todavía.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

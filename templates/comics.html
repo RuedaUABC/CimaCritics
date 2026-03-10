@@ -8,8 +8,8 @@
                 <i class="fas fa-book"></i> Catálogo de Cómics
             </h1>
 
-            {% if current_user.is_authenticated %}
-            <a href="#" class="btn btn-success">
+            {% if current_user.is_authenticated and current_user.es_admin %}
+            <a href="{{ url_for('add_comic') }}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Agregar Cómic
             </a>
             {% endif %}
@@ -84,12 +84,12 @@
                 <p class="card-text text-muted mb-2 small">
                     <strong>Escritor:</strong> {{ comic.escritor }}<br>
                     <strong>Dibujante:</strong> {{ comic.dibujante }}<br>
-                    <strong>Lanzamiento:</strong> {{ comic.lanzamiento }}<br>
                     <strong>Editorial:</strong> {{ comic.editorial }}<br>
+                    <strong>Lanzamiento:</strong> {{ comic.lanzamiento }}<br>
                     <span class="mt-2 d-inline-block">
-                        <strong>Géneros:</strong><br>
+                        <strong>Géneros:</strong> 
                         {% for genero in comic.generos %}
-                            <span class="badge bg-secondary mb-1">{{ genero.nombre }}</span>
+                            <span class="badge bg-secondary">{{ genero.nombre }}</span>
                         {% endfor %}
                     </span>
                 </p>
@@ -99,9 +99,6 @@
                     <span class="badge bg-warning text-dark">
                         <i class="fas fa-star"></i> {{ "%.1f"|format(comic.promedio_calificacion) }}
                     </span>
-                    <small class="text-muted ms-2">
-                        ({{ comic.reviews|length }} reseñas)
-                    </small>
                 </div>
                 {% endif %}
 

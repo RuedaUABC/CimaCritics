@@ -34,31 +34,42 @@
                     </li>
                 </ul>
 
-                <ul class="navbar-nav">
+                <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user"></i> {{ current_user.nombre }}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle fs-5 me-1"></i> {{ current_user.nombre }}
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url_for('perfil', user_id=current_user.id) }}">
-                                    <i class="fas fa-user-circle"></i> Mi Perfil
-                                </a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdownMenuLink">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('perfil', user_id=current_user.id) }}">
+                                        <i class="fas fa-user text-primary me-2"></i> Mi Perfil
+                                    </a>
+                                </li>
+                                {% if current_user.es_admin %}
+                                <li>
+                                    <a class="dropdown-item fw-bold text-success" href="{{ url_for('admin_dashboard') }}">
+                                        <i class="fas fa-tools text-success me-2"></i> Dashboard Admin
+                                    </a>
+                                </li>
+                                {% endif %}
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">
-                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                                </a></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('login') }}">
-                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                                <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">
-                                <i class="fas fa-user-plus"></i> Registrarse
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-primary btn-sm mt-1" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus me-1"></i> Registrarse
                             </a>
                         </li>
                     {% endif %}

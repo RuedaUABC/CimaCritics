@@ -11,7 +11,7 @@ def seed_database():
         # Crear usuarios de ejemplo
         usuarios_data = [
             {'nombre': 'Alice Johnson', 'email': 'alice@example.com', 'password': 'password123'},
-            {'nombre': 'Bob Smith', 'email': 'bob@example.com', 'password': 'password123'},
+            {'nombre': 'Bob Smith', 'email': 'bob@example.com', 'password': 'password122'},
             {'nombre': 'Charlie Brown', 'email': 'charlie@example.com', 'password': 'password123'},
             {'nombre': 'Diana Prince', 'email': 'diana@example.com', 'password': 'password123'},
             {'nombre': 'Admin User', 'email': 'admin@cimacritics.com', 'password': 'admin123', 'es_admin': True}
