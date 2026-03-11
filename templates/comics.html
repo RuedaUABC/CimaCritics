@@ -9,7 +9,7 @@
             </h1>
 
             {% if current_user.is_authenticated and current_user.es_admin %}
-            <a href="{{ url_for('add_comic') }}" class="btn btn-success">
+            <a href="{{ url_for('add_comic') }}" class="form-label">
                 <i class="fas fa-plus"></i> Agregar Cómic
             </a>
             {% endif %}

@@ -147,25 +147,10 @@ Datos iniciales incluyen:
 - **[APIs](docs/Backend/APIs.md)**: Endpoints planificados
 - **[Requerimientos](docs/Requerimientos/)**: Especificaciones funcionales
 
-## 🤝 Contribución
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
 ## 📝 Licencia
 Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## 👥 Equipo
-- **Desarrollador Principal**: [Tu Nombre]
-- **Diseñador UX/UI**: [Nombre]
-- **QA Tester**: [Nombre]
-
 ## 📞 Contacto
-- **Email**: tu@email.com
+- **Email**: rueda.jorge@uabc.edu.mx
 - **GitHub**: [https://github.com/RuedaUABC/CimaCritics](https://github.com/RuedaUABC/CimaCritics)
-- **Discord**: [Servidor del proyecto]
 
----
-⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!
