@@ -62,15 +62,66 @@ def index():
 
 @app.route('/comics')
 def comics():
-    """Listado de cómics"""
+    """Listado de cómics con búsqueda y filtros"""
     page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '')
+    genero_id = request.args.get('genero', type=int)
+    autor = request.args.get('autor', '')
+    editorial = request.args.get('editorial', '')
+    sort = request.args.get('sort', 'recent')
+    
     per_page = 12
-    comics_query = Comic.query.order_by(Comic.fecha_creacion.desc())
-    comics_paginated = comics_query.paginate(page=page, per_page=per_page, error_out=False)
+    query = Comic.query
+    
+    # Búsqueda global (Normal)
+    if q:
+        query = query.filter(
+            db.or_(
+                Comic.titulo.ilike(f'%{q}%'),
+                Comic.escritor.ilike(f'%{q}%'),
+                Comic.dibujante.ilike(f'%{q}%'),
+                Comic.editorial.ilike(f'%{q}%'),
+                Comic.descripcion.ilike(f'%{q}%')
+            )
+        )
+    
+    # Filtros avanzados
+    if genero_id:
+        query = query.join(Comic.generos).filter(Genero.id == genero_id)
+    
+    if autor:
+        query = query.filter(
+            db.or_(
+                Comic.escritor.ilike(f'%{autor}%'),
+                Comic.dibujante.ilike(f'%{autor}%')
+            )
+        )
+        
+    if editorial:
+        query = query.filter(Comic.editorial.ilike(f'%{editorial}%'))
+        
+    # Ordenamiento
+    if sort == 'rating':
+        query = query.order_by(Comic.promedio_calificacion.desc())
+    elif sort == 'title':
+        query = query.order_by(Comic.titulo.asc())
+    else:  # 'recent'
+        query = query.order_by(Comic.fecha_creacion.desc())
+        
+    comics_paginated = query.paginate(page=page, per_page=per_page, error_out=False)
+    generos = Genero.query.order_by(Genero.nombre.asc()).all()
 
     return render_template('comics.html', title='Cómics',
                          comics=comics_paginated.items,
-                         pagination=comics_paginated)
+                         pagination=comics_paginated,
+                         generos=generos,
+                         filters={
+                             'q': q,
+                             'genero': genero_id,
+                             'autor': autor,
+                             'editorial': editorial,
+                             'sort': sort
+                         })
 
 @app.route('/comics/<int:comic_id>')
 def comic_detail(comic_id):
@@ -144,8 +195,9 @@ def perfil(user_id):
     user = Usuario.query.get_or_404(user_id)
     reviews = Review.query.filter_by(usuario_id=user_id).order_by(Review.fecha_creacion.desc()).all()
 
+    form = ReviewForm()
     return render_template('perfil.html', title=f'Perfil de {user.nombre}',
-                         user=user, reviews=reviews)
+                         user=user, reviews=reviews, form=form)
 
 @app.route('/comics/<int:comic_id>/review', methods=['POST'])
 @login_required
@@ -184,6 +236,67 @@ def add_review(comic_id):
                 flash(f"{getattr(form, field).label.text}: {error}", 'error')
 
     return redirect(url_for('comic_detail', comic_id=comic_id))
+
+@app.route('/review/<int:review_id>/edit', methods=['POST'])
+@login_required
+def edit_review(review_id):
+    """Editar una reseña existente"""
+    review = Review.query.get_or_404(review_id)
+    
+    # Verificar propiedad
+    if review.usuario_id != current_user.id:
+        flash('No tienes permiso para editar esta reseña.', 'error')
+        return redirect(request.referrer or url_for('comic_detail', comic_id=review.comic_id))
+        
+    form = ReviewForm()
+    if form.validate_on_submit():
+        review.calificacion = form.calificacion.data
+        review.texto = form.texto.data
+        db.session.commit()
+        
+        # Actualizar promedio del cómic
+        comic = Comic.query.get(review.comic_id)
+        reviews = Review.query.filter_by(comic_id=comic.id).all()
+        if reviews:
+            promedio = sum(r.calificacion for r in reviews) / len(reviews)
+            comic.promedio_calificacion = round(promedio, 1)
+            db.session.commit()
+            
+        flash('Reseña actualizada correctamente.', 'success')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"{getattr(form, field).label.text}: {error}", 'error')
+                
+    return redirect(request.referrer or url_for('comic_detail', comic_id=review.comic_id))
+
+@app.route('/review/<int:review_id>/delete', methods=['POST'])
+@login_required
+def delete_review(review_id):
+    """Eliminar una reseña"""
+    review = Review.query.get_or_404(review_id)
+    comic_id = review.comic_id
+    
+    # Verificar propiedad (o si es admin)
+    if review.usuario_id != current_user.id and not current_user.es_admin:
+        flash('No tienes permiso para eliminar esta reseña.', 'error')
+        return redirect(request.referrer or url_for('comic_detail', comic_id=comic_id))
+        
+    db.session.delete(review)
+    db.session.commit()
+    
+    # Actualizar promedio del cómic
+    comic = Comic.query.get(comic_id)
+    reviews = Review.query.filter_by(comic_id=comic_id).all()
+    if reviews:
+        promedio = sum(r.calificacion for r in reviews) / len(reviews)
+        comic.promedio_calificacion = round(promedio, 1)
+    else:
+        comic.promedio_calificacion = 0.0
+    db.session.commit()
+    
+    flash('Reseña eliminada correctamente.', 'success')
+    return redirect(request.referrer or url_for('comic_detail', comic_id=comic_id))
 
 # Rutas Admin
 @app.route('/admin')

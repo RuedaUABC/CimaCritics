@@ -197,6 +197,28 @@ h1, h2, h3, h4, .navbar-brand {
     background: var(--text-muted);
 }
 
+/* --- Search & Filters --- */
+.mt-n3 { margin-top: -1rem !important; }
+.rounded-top-0 { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
+
+#searchForm .form-control:focus, 
+#searchForm .form-select:focus {
+    background-color: rgba(15, 23, 42, 0.4) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+#searchForm .input-group-text {
+    transition: var(--transition-smooth);
+}
+
+#searchForm .input-group:focus-within .input-group-text {
+    border-color: var(--primary);
+    color: var(--primary) !important;
+}
+
+.border-top-0 { border-top: 0 !important; }
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     * {

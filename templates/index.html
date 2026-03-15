@@ -6,19 +6,21 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 mb-4 border border-primary border-opacity-25">
+                <span
+                    class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 mb-4 border border-primary border-opacity-25">
                     <i class="fas fa-bolt me-1"></i> La nueva era del análisis de cómics
                 </span>
                 <h1 class="title-gradient mb-3">Donde el Criterio Alcanza su Cima</h1>
                 <p class="lead text-muted mb-5 px-lg-5">
-                    Descubre una experiencia curada para los verdaderos amantes del noveno arte. Califica, reseña y explora los universos más profundos.
+                    Califica, reseña y explora los universos más profundos.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
                     {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('register') }}" class="btn-premium text-decoration-none">Comenzar Ahora</a>
-                        <a href="{{ url_for('comics') }}" class="btn-outline-premium text-decoration-none">Explorar Catálogo</a>
+                    <a href="{{ url_for('register') }}" class="btn-premium text-decoration-none">Comenzar Ahora</a>
+                    <a href="{{ url_for('comics') }}" class="btn-outline-premium text-decoration-none">Explorar
+                        Catálogo</a>
                     {% else %}
-                        <a href="{{ url_for('comics') }}" class="btn-premium text-decoration-none">Ir al Catálogo</a>
+                    <a href="{{ url_for('comics') }}" class="btn-premium text-decoration-none">Ir al Catálogo</a>
                     {% endif %}
                 </div>
             </div>
@@ -73,22 +75,26 @@
         <div class="col-md-4 col-sm-6">
             <div class="comic-card">
                 {% if comic.imagen_url %}
-                    <img src="{{ comic.imagen_url }}" class="w-100 shadow-lg" alt="{{ comic.titulo }}" style="aspect-ratio: 2/3; object-fit: cover;">
+                <img src="{{ comic.imagen_url }}" class="w-100 shadow-lg" alt="{{ comic.titulo }}"
+                    style="aspect-ratio: 2/3; object-fit: cover;">
                 {% else %}
-                    <div class="w-100 shadow-lg bg-secondary d-flex align-items-center justify-content-center" style="aspect-ratio: 2/3; border-radius: 12px;">
-                        <i class="fas fa-book fa-3x text-white opacity-25"></i>
-                    </div>
+                <div class="w-100 shadow-lg bg-secondary d-flex align-items-center justify-content-center"
+                    style="aspect-ratio: 2/3; border-radius: 12px;">
+                    <i class="fas fa-book fa-3x text-white opacity-25"></i>
+                </div>
                 {% endif %}
-                
+
                 <div class="comic-overlay">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h5 class="fw-bold mb-0">{{ comic.titulo }}</h5>
                         {% if comic.promedio_calificacion %}
-                            <span class="badge bg-warning text-dark"><i class="fas fa-star me-1"></i>{{ "%.1f"|format(comic.promedio_calificacion) }}</span>
+                        <span class="badge bg-warning text-dark"><i class="fas fa-star me-1"></i>{{
+                            "%.1f"|format(comic.promedio_calificacion) }}</span>
                         {% endif %}
                     </div>
                     <p class="text-muted small mb-3 text-truncate">{{ comic.escritor }} • {{ comic.editorial }}</p>
-                    <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-sm btn-premium w-100">Ver Detalles</a>
+                    <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-sm btn-premium w-100">Ver
+                        Detalles</a>
                 </div>
             </div>
         </div>
@@ -108,4 +114,4 @@
 {% endif %}
 
 {% endblock %}
- endblock %}
+endblock %}

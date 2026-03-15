@@ -191,9 +191,27 @@
                         <button class="btn btn-sm btn-outline-glass rounded-pill px-3 hover:bg-danger transition-all">
                             <i class="fas fa-thumbs-down me-1"></i> {{ review.dislikes }}
                         </button>
+                        
+                        {% if current_user.is_authenticated and review.usuario_id == current_user.id %}
+                        <div class="ms-auto d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3" 
+                                    data-bs-toggle="modal" data-bs-target="#editReviewModal"
+                                    data-review-id="{{ review.id }}"
+                                    data-rating="{{ review.calificacion }}"
+                                    data-text="{{ review.texto }}">
+                                <i class="fas fa-edit me-1"></i> Editar
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    data-bs-toggle="modal" data-bs-target="#deleteReviewModal"
+                                    data-review-id="{{ review.id }}">
+                                <i class="fas fa-trash-alt me-1"></i> Borrar
+                            </button>
+                        </div>
+                        {% else %}
                         <button class="btn btn-sm btn-link text-muted ms-auto text-decoration-none extra-small">
                             <i class="fas fa-reply me-1"></i> Responder
                         </button>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
@@ -217,32 +235,97 @@
         </div>
     </div>
 
-    <!-- Modal Premium -->
+    <!-- Modal Publicar Reseña -->
     {% if current_user.is_authenticated and not user_has_reviewed %}
     <div class="modal fade" id="reviewModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content glass-card border-glass p-2">
                 <div class="modal-header border-glass border-bottom pb-3">
-                    <h5 class="modal-title text-white fw-bold"><i class="fas fa-star text-warning me-2"></i> Tu Opinión
-                        Importa</h5>
+                    <h5 class="modal-title text-white fw-bold"><i class="fas fa-star text-warning me-2"></i> Tu Opinión Importa</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ url_for('add_review', comic_id=comic.id) }}" method="POST">
                     {{ form.hidden_tag() }}
                     <div class="modal-body py-4">
-                        <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold text-uppercase">Tu Calificación</label>
-                            {{ form.calificacion(class="form-select bg-dark bg-opacity-50 border-glass text-white") }}
+                        <div class="mb-4 text-center">
+                            <label class="form-label text-muted small fw-bold text-uppercase d-block mb-3">Tu Calificación</label>
+                            <div class="star-rating fs-2" data-input-id="rating-input">
+                                {% for i in range(5, 0, -1) %}
+                                <input type="radio" id="star{{ i }}" name="calificacion" value="{{ i }}" {{ 'checked' if i == 5 }} class="d-none">
+                                <label for="star{{ i }}" class="fas fa-star cursor-pointer px-1 transition-all hover-scale" title="{{ i }} estrellas"></label>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="rating-input" name="calificacion" value="5">
                         </div>
                         <div class="mb-0">
                             <label class="form-label text-muted small fw-bold text-uppercase">Tu Crítica</label>
-                            {{ form.texto(class="form-control bg-dark bg-opacity-50 border-glass text-white", rows="5",
-                            placeholder="Escribe lo que piensas de esta obra...") }}
+                            {{ form.texto(class="form-control bg-dark bg-opacity-50 border-glass text-white", rows="5", placeholder="Escribe lo que piensas de esta obra...") }}
                         </div>
                     </div>
                     <div class="modal-footer border-glass pt-3">
                         <button type="button" class="btn btn-outline-glass" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn-premium px-4">Publicar</button>
+                        <button type="submit" class="btn-premium px-4 shadow-glow">Publicar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Modal Editar Reseña -->
+    {% if current_user.is_authenticated %}
+    <div class="modal fade" id="editReviewModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card border-glass p-2">
+                <div class="modal-header border-glass border-bottom pb-3">
+                    <h5 class="modal-title text-white fw-bold"><i class="fas fa-edit text-primary me-2"></i> Editar Reseña</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editReviewForm" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="modal-body py-4">
+                        <div class="mb-4 text-center">
+                            <label class="form-label text-muted small fw-bold text-uppercase d-block mb-3">Tu Calificación</label>
+                            <div class="star-rating edit-star-rating fs-2" data-input-id="edit-rating-input">
+                                {% for i in range(5, 0, -1) %}
+                                <input type="radio" id="edit-star{{ i }}" name="calificacion" value="{{ i }}" class="d-none">
+                                <label for="edit-star{{ i }}" class="fas fa-star cursor-pointer px-1 transition-all hover-scale" title="{{ i }} estrellas"></label>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="edit-rating-input" name="calificacion">
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label text-muted small fw-bold text-uppercase">Tu Crítica</label>
+                            <textarea name="texto" id="edit-text-area" class="form-control bg-dark bg-opacity-50 border-glass text-white" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-glass pt-3">
+                        <button type="button" class="btn btn-outline-glass" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn-premium px-4">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Reseña -->
+    <div class="modal fade" id="deleteReviewModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content glass-card border-glass border-danger border-opacity-25 p-2">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-glow-danger" style="width: 64px; height: 64px;">
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">¿Eliminar reseña?</h5>
+                    <p class="text-muted small mb-0">Esta acción no se puede deshacer. Tu crítica desaparecerá para siempre.</p>
+                </div>
+                <form id="deleteReviewForm" method="POST">
+                    <div class="modal-footer border-0 pt-0 justify-content-center gap-2 pb-4">
+                        <button type="button" class="btn btn-outline-glass px-4" data-bs-dismiss="modal">No, mantener</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">Sí, eliminar</button>
                     </div>
                 </form>
             </div>
@@ -271,5 +354,91 @@
             border-color: rgba(255, 255, 255, 0.2);
             color: #fff;
         }
+
+        /* Star Rating Styles */
+        .star-rating {
+            display: inline-flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .star-rating label {
+            color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--secondary) !important;
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.2);
+        }
+
+        .shadow-glow-danger {
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+        }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Interactive Star Rating Logic
+            function initStarRating(containerSelector) {
+                const containers = document.querySelectorAll(containerSelector);
+                containers.forEach(container => {
+                    const labels = container.querySelectorAll('label');
+                    const inputId = container.getAttribute('data-input-id');
+                    const hiddenInput = document.getElementById(inputId);
+
+                    labels.forEach(label => {
+                        label.addEventListener('click', function() {
+                            const value = this.previousElementSibling.value;
+                            hiddenInput.value = value;
+                        });
+                    });
+                });
+            }
+
+            initStarRating('.star-rating');
+
+            // Edit Modal Logic
+            const editReviewModal = document.getElementById('editReviewModal');
+            if (editReviewModal) {
+                editReviewModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const reviewId = button.getAttribute('data-review-id');
+                    const rating = button.getAttribute('data-rating');
+                    const text = button.getAttribute('data-text');
+
+                    const form = editReviewModal.querySelector('#editReviewForm');
+                    form.action = `/review/${reviewId}/edit`;
+
+                    const textArea = editReviewModal.querySelector('#edit-text-area');
+                    textArea.value = text;
+
+                    const hiddenRating = editReviewModal.querySelector('#edit-rating-input');
+                    hiddenRating.value = rating;
+
+                    // Update visual stars
+                    const starInput = editReviewModal.querySelector(`#edit-star${rating}`);
+                    if (starInput) starInput.checked = true;
+                });
+            }
+
+            // Delete Modal Logic
+            const deleteReviewModal = document.getElementById('deleteReviewModal');
+            if (deleteReviewModal) {
+                deleteReviewModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const reviewId = button.getAttribute('data-review-id');
+                    const form = deleteReviewModal.querySelector('#deleteReviewForm');
+                    form.action = `/review/${reviewId}/delete`;
+                });
+            }
+        });
+    </script>
     {% endblock %}

@@ -15,42 +15,82 @@
     </div>
 </div>
 
-<!-- Filtros Premium -->
+<!-- Buscador y Filtros -->
 <div class="row mb-5">
     <div class="col-12">
-        <div class="glass-card p-4">
-            <form class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label class="form-label text-muted small fw-bold text-uppercase">Buscar</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-dark bg-opacity-25 border-glass border-end-0 text-muted">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" class="form-control bg-dark bg-opacity-25 border-glass border-start-0 text-white" placeholder="Título, autor, editorial...">
+        <form action="{{ url_for('comics') }}" method="GET" id="searchForm">
+            <!-- Barra de Búsqueda Normal -->
+            <div class="glass-card p-3 mb-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <span
+                                class="input-group-text bg-dark bg-opacity-25 border-glass border-end-0 text-muted px-4">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" name="q" value="{{ filters.q }}"
+                                class="form-control form-control-lg bg-dark bg-opacity-25 border-glass border-start-0 text-white py-3"
+                                placeholder="Buscar por título, autor o editorial...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn-premium flex-grow-1 py-3">Buscar</button>
+                            <button type="button" class="btn-outline-premium px-4 py-3" data-bs-toggle="collapse"
+                                data-bs-target="#advancedFilters" aria-expanded="false">
+                                <i class="fas fa-sliders-h"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label text-muted small fw-bold text-uppercase">Género</label>
-                    <select class="form-select bg-dark bg-opacity-25 border-glass text-white">
-                        <option value="" class="bg-dark">Todos los géneros</option>
-                        <option class="bg-dark">Superhéroes</option>
-                        <option class="bg-dark">Fantasía</option>
-                        <option class="bg-dark">Autobiográfico</option>
-                    </select>
+            </div>
+
+            <!-- Filtros Avanzados (Collapsible) -->
+            <div class="collapse {{ 'show' if filters.genero or filters.autor or filters.editorial or filters.sort != 'recent' }}"
+                id="advancedFilters">
+                <div class="glass-card p-4 border-top-0 rounded-top-0 mt-n3 mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase">Género</label>
+                            <select name="genero" class="form-select bg-dark bg-opacity-25 border-glass text-white">
+                                <option value="">Todos los géneros</option>
+                                {% for genero in generos %}
+                                <option value="{{ genero.id }}" {{ 'selected' if filters.genero==genero.id }}>{{
+                                    genero.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase">Autor</label>
+                            <input type="text" name="autor" value="{{ filters.autor }}"
+                                class="form-control bg-dark bg-opacity-25 border-glass text-white"
+                                placeholder="Ej: Alan Moore">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase">Editorial</label>
+                            <input type="text" name="editorial" value="{{ filters.editorial }}"
+                                class="form-control bg-dark bg-opacity-25 border-glass text-white"
+                                placeholder="Ej: DC Comics">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase">Ordenar por</label>
+                            <select name="sort" class="form-select bg-dark bg-opacity-25 border-glass text-white">
+                                <option value="recent" {{ 'selected' if filters.sort=='recent' }}>Últimos agregados
+                                </option>
+                                <option value="rating" {{ 'selected' if filters.sort=='rating' }}>Mejor calificados
+                                </option>
+                                <option value="title" {{ 'selected' if filters.sort=='title' }}>Alfabético</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <a href="{{ url_for('comics') }}"
+                            class="btn btn-link text-muted text-decoration-none small me-3 pt-2">Limpiar filtros</a>
+                        <button type="submit" class="btn btn-premium px-5">Aplicar Filtros</button>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label text-muted small fw-bold text-uppercase">Ordenar</label>
-                    <select class="form-select bg-dark bg-opacity-25 border-glass text-white">
-                        <option class="bg-dark">Últimos agregados</option>
-                        <option class="bg-dark">Mejor calificados</option>
-                        <option class="bg-dark">Alfabético</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn-premium w-100">Filtrar</button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -60,27 +100,33 @@
     <div class="col-sm-6 col-md-4 col-lg-3">
         <div class="comic-card">
             {% if comic.imagen_url %}
-                <img src="{{ comic.imagen_url }}" class="w-100 shadow-lg" alt="{{ comic.titulo }}" style="aspect-ratio: 2/3; object-fit: cover;">
+            <img src="{{ comic.imagen_url }}" class="w-100 shadow-lg" alt="{{ comic.titulo }}"
+                style="aspect-ratio: 2/3; object-fit: cover;">
             {% else %}
-                <div class="w-100 shadow-lg bg-secondary d-flex align-items-center justify-content-center" style="aspect-ratio: 2/3; border-radius: 12px;">
-                    <i class="fas fa-book fa-3x text-white opacity-25"></i>
-                </div>
+            <div class="w-100 shadow-lg bg-secondary d-flex align-items-center justify-content-center"
+                style="aspect-ratio: 2/3; border-radius: 12px;">
+                <i class="fas fa-book fa-3x text-white opacity-25"></i>
+            </div>
             {% endif %}
-            
+
             <div class="comic-overlay">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h6 class="fw-bold mb-0">{{ comic.titulo }}</h6>
                     {% if comic.promedio_calificacion %}
-                        <span class="badge bg-warning text-dark small"><i class="fas fa-star me-1"></i>{{ "%.1f"|format(comic.promedio_calificacion) }}</span>
+                    <span class="badge bg-warning text-dark small"><i class="fas fa-star me-1"></i>{{
+                        "%.1f"|format(comic.promedio_calificacion) }}</span>
                     {% endif %}
                 </div>
                 <p class="text-muted extra-small mb-2 text-truncate">{{ comic.escritor }}</p>
                 <div class="mb-3">
                     {% for genero in comic.generos[:2] %}
-                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 extra-small">{{ genero.nombre }}</span>
+                    <span
+                        class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 extra-small">{{
+                        genero.nombre }}</span>
                     {% endfor %}
                 </div>
-                <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-sm btn-premium w-100">Detalles</a>
+                <a href="{{ url_for('comic_detail', comic_id=comic.id) }}"
+                    class="btn btn-sm btn-premium w-100">Detalles</a>
             </div>
         </div>
     </div>
@@ -95,29 +141,34 @@
             <ul class="pagination justify-content-center gap-2">
                 {% if pagination.has_prev %}
                 <li class="page-item">
-                    <a class="page-link glass-card border-glass text-white px-3" href="{{ url_for('comics', page=pagination.prev_num) }}">
+                    <a class="page-link glass-card border-glass text-white px-3"
+                        href="{{ url_for('comics', page=pagination.prev_num, q=filters.q, genero=filters.genero, autor=filters.autor, editorial=filters.editorial, sort=filters.sort) }}">
                         <i class="fas fa-chevron-left"></i>
                     </a>
                 </li>
                 {% endif %}
 
                 {% for page_num in pagination.iter_pages() %}
-                    {% if page_num %}
-                        <li class="page-item">
-                            {% if page_num == pagination.page %}
-                                <span class="page-link bg-primary border-primary text-white px-3 rounded-circle">{{ page_num }}</span>
-                            {% else %}
-                                <a class="page-link glass-card border-glass text-white px-3 rounded-circle" href="{{ url_for('comics', page=page_num) }}">{{ page_num }}</a>
-                            {% endif %}
-                        </li>
+                {% if page_num %}
+                <li class="page-item">
+                    {% if page_num == pagination.page %}
+                    <span class="page-link bg-primary border-primary text-white px-3 rounded-circle">{{ page_num
+                        }}</span>
                     {% else %}
-                        <li class="page-item disabled"><span class="page-link border-0 text-muted">...</span></li>
+                    <a class="page-link glass-card border-glass text-white px-3 rounded-circle"
+                        href="{{ url_for('comics', page=page_num, q=filters.q, genero=filters.genero, autor=filters.autor, editorial=filters.editorial, sort=filters.sort) }}">{{
+                        page_num }}</a>
                     {% endif %}
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link border-0 text-muted">...</span></li>
+                {% endif %}
                 {% endfor %}
 
                 {% if pagination.has_next %}
                 <li class="page-item">
-                    <a class="page-link glass-card border-glass text-white px-3" href="{{ url_for('comics', page=pagination.next_num) }}">
+                    <a class="page-link glass-card border-glass text-white px-3"
+                        href="{{ url_for('comics', page=pagination.next_num, q=filters.q, genero=filters.genero, autor=filters.autor, editorial=filters.editorial, sort=filters.sort) }}">
                         <i class="fas fa-chevron-right"></i>
                     </a>
                 </li>
@@ -135,13 +186,16 @@
             <i class="fas fa-search fa-3x text-muted mb-4 opacity-50"></i>
             <h4 class="text-white">Sin resultados</h4>
             <p class="text-muted">No encontramos cómics que coincidan con tu búsqueda.</p>
-            <a href="{{ url_for('comics') }}" class="btn-outline-premium text-decoration-none d-inline-block mt-3">Ver todo el catálogo</a>
+            <a href="{{ url_for('comics') }}" class="btn-outline-premium text-decoration-none d-inline-block mt-3">Ver
+                todo el catálogo</a>
         </div>
     </div>
 </div>
 {% endif %}
 
 <style>
-    .extra-small { font-size: 0.7rem; }
+    .extra-small {
+        font-size: 0.7rem;
+    }
 </style>
 {% endblock %}
