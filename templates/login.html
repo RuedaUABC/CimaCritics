@@ -1,58 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="col-md-6 col-lg-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white text-center">
-                <h4 class="mb-0">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                </h4>
+        <div class="glass-card p-4 p-md-5">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-white mb-1">Bienvenido</h2>
+                <p class="text-muted small">Inicia sesión en CimaCritics</p>
             </div>
 
-            <div class="card-body">
-                <form method="POST">
-                    {{ form.hidden_tag() }}
+            <form method="POST">
+                {{ form.hidden_tag() }}
 
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
-                        {% if form.email.errors %}
-                            <div class="invalid-feedback">
-                                {% for error in form.email.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
+                <div class="mb-4">
+                    {{ form.email.label(class="form-label text-muted small fw-bold text-uppercase") }}
+                    {{ form.email(class="form-control bg-dark bg-opacity-25 border-glass text-white py-2" + (" is-invalid" if form.email.errors else ""), placeholder="tu@email.com") }}
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
-                        {% if form.password.errors %}
-                            <div class="invalid-feedback">
-                                {% for error in form.password.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
+                <div class="mb-4">
+                    {{ form.password.label(class="form-label text-muted small fw-bold text-uppercase") }}
+                    {{ form.password(class="form-control bg-dark bg-opacity-25 border-glass text-white py-2" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••") }}
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <div class="mb-3 form-check">
-                        {{ form.remember_me(class="form-check-input") }}
-                        {{ form.remember_me.label(class="form-check-label") }}
-                    </div>
+                <div class="mb-4 form-check">
+                    {{ form.remember_me(class="form-check-input bg-dark border-glass") }}
+                    {{ form.remember_me.label(class="form-check-label text-muted small") }}
+                </div>
 
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </form>
-            </div>
+                <div class="d-grid pt-2">
+                    <button type="submit" class="btn-premium py-2">
+                        {{ form.submit.label.text }}
+                    </button>
+                </div>
+            </form>
 
-            <div class="card-footer text-center">
-                <p class="mb-0">
+            <div class="mt-4 text-center">
+                <p class="text-muted small mb-0">
                     ¿No tienes cuenta?
-                    <a href="{{ url_for('register') }}" class="text-primary">Regístrate aquí</a>
+                    <a href="{{ url_for('register') }}" class="text-primary text-decoration-none fw-bold">Únete ahora</a>
                 </p>
             </div>
         </div>

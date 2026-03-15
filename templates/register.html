@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white text-center">
-                <h4 class="mb-0">
-                    <i class="fas fa-user-plus"></i> Registrarse
-                </h4>
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="glass-card p-4 p-md-5">
+            <div class="text-center mb-4">
+                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-1 mb-2 border border-primary border-opacity-25">Únete a la Élite</span>
+                <h2 class="fw-bold text-white mb-1">Crea tu Cuenta</h2>
+                <p class="text-muted small">Sé parte del criterio de CimaCritics</p>
             </div>
 
-            <div class="card-body">
-                <form method="POST">
-                    {{ form.hidden_tag() }}
+            <form method="POST">
+                {{ form.hidden_tag() }}
 
-                    <div class="mb-3">
-                        {{ form.nombre.label(class="form-label") }}
-                        {{ form.nombre(class="form-control" + (" is-invalid" if form.nombre.errors else "")) }}
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        {{ form.nombre.label(class="form-label text-muted small fw-bold text-uppercase") }}
+                        {{ form.nombre(class="form-control bg-dark bg-opacity-25 border-glass text-white py-2" + (" is-invalid" if form.nombre.errors else ""), placeholder="Tu nombre") }}
                         {% if form.nombre.errors %}
                             <div class="invalid-feedback">
                                 {% for error in form.nombre.errors %}
@@ -26,9 +26,9 @@
                         {% endif %}
                     </div>
 
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                    <div class="col-12">
+                        {{ form.email.label(class="form-label text-muted small fw-bold text-uppercase") }}
+                        {{ form.email(class="form-control bg-dark bg-opacity-25 border-glass text-white py-2" + (" is-invalid" if form.email.errors else ""), placeholder="tu@email.com") }}
                         {% if form.email.errors %}
                             <div class="invalid-feedback">
                                 {% for error in form.email.errors %}
@@ -38,9 +38,9 @@
                         {% endif %}
                     </div>
 
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                    <div class="col-md-6">
+                        {{ form.password.label(class="form-label text-muted small fw-bold text-uppercase") }}
+                        {{ form.password(class="form-control bg-dark bg-opacity-25 border-glass text-white py-2" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••") }}
                         {% if form.password.errors %}
                             <div class="invalid-feedback">
                                 {% for error in form.password.errors %}
@@ -50,9 +50,9 @@
                         {% endif %}
                     </div>
 
-                    <div class="mb-3">
-                        {{ form.password2.label(class="form-label") }}
-                        {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else "")) }}
+                    <div class="col-md-6">
+                        {{ form.password2.label(class="form-label text-muted small fw-bold text-uppercase") }}
+                        {{ form.password2(class="form-control bg-dark bg-opacity-25 border-glass text-white py-2" + (" is-invalid" if form.password2.errors else ""), placeholder="Repite password") }}
                         {% if form.password2.errors %}
                             <div class="invalid-feedback">
                                 {% for error in form.password2.errors %}
@@ -61,17 +61,19 @@
                             </div>
                         {% endif %}
                     </div>
+                </div>
 
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-success") }}
-                    </div>
-                </form>
-            </div>
+                <div class="d-grid pt-2">
+                    <button type="submit" class="btn-premium py-2">
+                        {{ form.submit.label.text }}
+                    </button>
+                </div>
+            </form>
 
-            <div class="card-footer text-center">
-                <p class="mb-0">
-                    ¿Ya tienes cuenta?
-                    <a href="{{ url_for('login') }}" class="text-success">Inicia sesión aquí</a>
+            <div class="mt-4 text-center">
+                <p class="text-muted small mb-0">
+                    ¿Ya tienes una cuenta?
+                    <a href="{{ url_for('login') }}" class="text-primary text-decoration-none fw-bold">Inicia sesión</a>
                 </p>
             </div>
         </div>

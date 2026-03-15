@@ -1,165 +1,125 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="fas fa-book"></i> Catálogo de Cómics
-            </h1>
-
-            {% if current_user.is_authenticated and current_user.es_admin %}
-            <a href="{{ url_for('add_comic') }}" class="form-label">
-                <i class="fas fa-plus"></i> Agregar Cómic
-            </a>
-            {% endif %}
-        </div>
+<div class="row align-items-center mb-5">
+    <div class="col-md-8">
+        <h1 class="title-gradient mb-1">Catálogo de Cómics</h1>
+        <p class="text-muted">Explora nuestra colección curada de obras maestras.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        {% if current_user.is_authenticated and current_user.es_admin %}
+        <a href="{{ url_for('add_comic') }}" class="btn-premium text-decoration-none d-inline-block">
+            <i class="fas fa-plus me-2"></i> Agregar Cómic
+        </a>
+        {% endif %}
     </div>
 </div>
 
-<!-- Filtros (futuro) -->
-<div class="row mb-4">
+<!-- Filtros Premium -->
+<div class="row mb-5">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <form class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Buscar</label>
-                        <input type="text" class="form-control" placeholder="Título, autor...">
+        <div class="glass-card p-4">
+            <form class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold text-uppercase">Buscar</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark bg-opacity-25 border-glass border-end-0 text-muted">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control bg-dark bg-opacity-25 border-glass border-start-0 text-white" placeholder="Título, autor, editorial...">
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Género</label>
-                        <select class="form-select">
-                            <option value="">Todos</option>
-                            <option>Superhéroes</option>
-                            <option>Fantasía</option>
-                            <option>Autobiográfico</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Editorial</label>
-                        <select class="form-select">
-                            <option value="">Todas</option>
-                            <option>DC Comics</option>
-                            <option>Marvel</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Ordenar por</label>
-                        <select class="form-select">
-                            <option>Fecha</option>
-                            <option>Calificación</option>
-                            <option>Título</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary">
-                            <i class="fas fa-times"></i> Limpiar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Lista de cómics -->
-<div class="row">
-    {% for comic in comics %}
-    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-        <div class="card h-100 shadow-sm">
-            {% if comic.imagen_url %}
-            <img src="{{ comic.imagen_url }}" class="card-img-top" alt="{{ comic.titulo }}" style="height: 200px; object-fit: cover;">
-            {% else %}
-            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                <i class="fas fa-book fa-3x text-white"></i>
-            </div>
-            {% endif %}
-
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ comic.titulo }}</h5>
-                <p class="card-text text-muted mb-2 small">
-                    <strong>Escritor:</strong> {{ comic.escritor }}<br>
-                    <strong>Dibujante:</strong> {{ comic.dibujante }}<br>
-                    <strong>Editorial:</strong> {{ comic.editorial }}<br>
-                    <strong>Lanzamiento:</strong> {{ comic.lanzamiento }}<br>
-                    <span class="mt-2 d-inline-block">
-                        <strong>Géneros:</strong> 
-                        {% for genero in comic.generos %}
-                            <span class="badge bg-secondary">{{ genero.nombre }}</span>
-                        {% endfor %}
-                    </span>
-                </p>
-
-                {% if comic.promedio_calificacion %}
-                <div class="mb-2">
-                    <span class="badge bg-warning text-dark">
-                        <i class="fas fa-star"></i> {{ "%.1f"|format(comic.promedio_calificacion) }}
-                    </span>
                 </div>
-                {% endif %}
+                <div class="col-md-3">
+                    <label class="form-label text-muted small fw-bold text-uppercase">Género</label>
+                    <select class="form-select bg-dark bg-opacity-25 border-glass text-white">
+                        <option value="" class="bg-dark">Todos los géneros</option>
+                        <option class="bg-dark">Superhéroes</option>
+                        <option class="bg-dark">Fantasía</option>
+                        <option class="bg-dark">Autobiográfico</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small fw-bold text-uppercase">Ordenar</label>
+                    <select class="form-select bg-dark bg-opacity-25 border-glass text-white">
+                        <option class="bg-dark">Últimos agregados</option>
+                        <option class="bg-dark">Mejor calificados</option>
+                        <option class="bg-dark">Alfabético</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn-premium w-100">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-                <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-primary mt-auto">
-                    <i class="fas fa-eye"></i> Ver Detalles
-                </a>
+<!-- Grid de Cómics Style Index -->
+<div class="row g-4">
+    {% for comic in comics %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="comic-card">
+            {% if comic.imagen_url %}
+                <img src="{{ comic.imagen_url }}" class="w-100 shadow-lg" alt="{{ comic.titulo }}" style="aspect-ratio: 2/3; object-fit: cover;">
+            {% else %}
+                <div class="w-100 shadow-lg bg-secondary d-flex align-items-center justify-content-center" style="aspect-ratio: 2/3; border-radius: 12px;">
+                    <i class="fas fa-book fa-3x text-white opacity-25"></i>
+                </div>
+            {% endif %}
+            
+            <div class="comic-overlay">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="fw-bold mb-0">{{ comic.titulo }}</h6>
+                    {% if comic.promedio_calificacion %}
+                        <span class="badge bg-warning text-dark small"><i class="fas fa-star me-1"></i>{{ "%.1f"|format(comic.promedio_calificacion) }}</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted extra-small mb-2 text-truncate">{{ comic.escritor }}</p>
+                <div class="mb-3">
+                    {% for genero in comic.generos[:2] %}
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 extra-small">{{ genero.nombre }}</span>
+                    {% endfor %}
+                </div>
+                <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="btn btn-sm btn-premium w-100">Detalles</a>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<!-- Paginación -->
+<!-- Paginación Premium -->
 {% if pagination %}
-<div class="row">
+<div class="row mt-5 pt-4">
     <div class="col-12">
         <nav aria-label="Paginación de cómics">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center gap-2">
                 {% if pagination.has_prev %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('comics', page=pagination.prev_num) }}">
-                        <i class="fas fa-chevron-left"></i> Anterior
+                    <a class="page-link glass-card border-glass text-white px-3" href="{{ url_for('comics', page=pagination.prev_num) }}">
+                        <i class="fas fa-chevron-left"></i>
                     </a>
-                </li>
-                {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">
-                        <i class="fas fa-chevron-left"></i> Anterior
-                    </span>
                 </li>
                 {% endif %}
 
                 {% for page_num in pagination.iter_pages() %}
                     {% if page_num %}
-                        {% if page_num == pagination.page %}
-                        <li class="page-item active">
-                            <span class="page-link">{{ page_num }}</span>
-                        </li>
-                        {% else %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for('comics', page=page_num) }}">{{ page_num }}</a>
+                            {% if page_num == pagination.page %}
+                                <span class="page-link bg-primary border-primary text-white px-3 rounded-circle">{{ page_num }}</span>
+                            {% else %}
+                                <a class="page-link glass-card border-glass text-white px-3 rounded-circle" href="{{ url_for('comics', page=page_num) }}">{{ page_num }}</a>
+                            {% endif %}
                         </li>
-                        {% endif %}
                     {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
+                        <li class="page-item disabled"><span class="page-link border-0 text-muted">...</span></li>
                     {% endif %}
                 {% endfor %}
 
                 {% if pagination.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('comics', page=pagination.next_num) }}">
-                        Siguiente <i class="fas fa-chevron-right"></i>
+                    <a class="page-link glass-card border-glass text-white px-3" href="{{ url_for('comics', page=pagination.next_num) }}">
+                        <i class="fas fa-chevron-right"></i>
                     </a>
-                </li>
-                {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">
-                        Siguiente <i class="fas fa-chevron-right"></i>
-                    </span>
                 </li>
                 {% endif %}
             </ul>
@@ -169,14 +129,19 @@
 {% endif %}
 
 {% if comics|length == 0 %}
-<div class="row">
-    <div class="col-12 text-center">
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle fa-2x mb-3"></i>
-            <h4>No se encontraron cómics</h4>
-            <p>Intenta ajustar los filtros de búsqueda.</p>
+<div class="row my-5 py-5 justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="glass-card p-5">
+            <i class="fas fa-search fa-3x text-muted mb-4 opacity-50"></i>
+            <h4 class="text-white">Sin resultados</h4>
+            <p class="text-muted">No encontramos cómics que coincidan con tu búsqueda.</p>
+            <a href="{{ url_for('comics') }}" class="btn-outline-premium text-decoration-none d-inline-block mt-3">Ver todo el catálogo</a>
         </div>
     </div>
 </div>
 {% endif %}
+
+<style>
+    .extra-small { font-size: 0.7rem; }
+</style>
 {% endblock %}

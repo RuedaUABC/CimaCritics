@@ -1,54 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <!-- Menú Vertical (Sidebar) -->
-    <div class="col-lg-3 mb-4">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body text-center p-4">
-                <div class="profile-avatar mb-3 position-relative d-inline-block">
-                    {% if user.avatar_url %}
-                    <img src="{{ user.avatar_url }}" class="rounded-circle shadow-sm" alt="{{ user.nombre }}" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #fff;">
-                    {% else %}
-                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 120px; height: 120px; border: 3px solid #fff;">
-                        <span class="text-white fs-1 fw-bold">{{ user.nombre[0]|upper }}</span>
-                    </div>
-                    {% endif %}
+<div class="row g-4">
+    <!-- Perfil Sidebar -->
+    <div class="col-lg-3">
+        <div class="glass-card p-4 text-center">
+            <div class="position-relative d-inline-block mb-3">
+                {% if user.avatar_url %}
+                <img src="{{ user.avatar_url }}" class="rounded-circle shadow-lg border-glass" alt="{{ user.nombre }}"
+                    style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                <div class="bg-primary bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm border border-primary border-opacity-10"
+                    style="width: 120px; height: 120px;">
+                    <span class="text-primary fs-1 fw-bold">{{ user.nombre[0]|upper }}</span>
                 </div>
-
-                <h4 class="card-title fw-bold mb-1">{{ user.nombre }}</h4>
-                <p class="text-muted small mb-3"><i class="fas fa-calendar-alt me-1"></i>Desde {{ user.fecha_registro.strftime('%b %Y') }}</p>
-
-                <div class="d-flex justify-content-center gap-2 mb-3">
-                    {% if user.es_admin %}
-                    <span class="badge bg-danger rounded-pill"><i class="fas fa-crown me-1"></i> Admin</span>
-                    {% elif user.es_moderador %}
-                    <span class="badge bg-warning rounded-pill"><i class="fas fa-shield-alt me-1"></i> Mod</span>
-                    {% else %}
-                    <span class="badge bg-secondary rounded-pill"><i class="fas fa-user me-1"></i> Usuario</span>
-                    {% endif %}
-                </div>
-
-                {% if current_user.is_authenticated and current_user.id != user.id %}
-                <button class="btn btn-primary w-100 rounded-pill mb-4 shadow-sm">
-                    <i class="fas fa-user-plus me-2"></i>Seguir
-                </button>
                 {% endif %}
-                
-                <hr class="text-muted">
+                <span class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-white"
+                    style="width: 18px; height: 18px;"></span>
+            </div>
 
-                <!-- Botones de Navegación Vertical -->
-                <div class="nav flex-column nav-pills text-start" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active rounded-pill mb-2 px-3 py-2 text-dark" id="v-pills-perfil-tab" data-bs-toggle="pill" data-bs-target="#v-pills-perfil" type="button" role="tab" aria-controls="v-pills-perfil" aria-selected="true">
-                        <i class="fas fa-user-circle me-2 text-primary"></i> Información
-                    </button>
-                    <button class="nav-link rounded-pill mb-2 px-3 py-2 text-dark" id="v-pills-resenas-tab" data-bs-toggle="pill" data-bs-target="#v-pills-resenas" type="button" role="tab" aria-controls="v-pills-resenas" aria-selected="false">
-                        <i class="fas fa-comments me-2 text-info"></i> Reseñas <span class="badge bg-secondary ms-auto rounded-pill">{{ reviews|length }}</span>
-                    </button>
-                    <button class="nav-link rounded-pill mb-2 px-3 py-2 text-dark" id="v-pills-seguidores-tab" data-bs-toggle="pill" data-bs-target="#v-pills-seguidores" type="button" role="tab" aria-controls="v-pills-seguidores" aria-selected="false">
-                        <i class="fas fa-users me-2 text-success"></i> Red
-                    </button>
-                </div>
+            <h4 class="fw-bold text-white mb-1">{{ user.nombre }}</h4>
+            <p class="text-muted small mb-3"><i class="far fa-calendar-alt me-2"></i>Miembro desde {{
+                user.fecha_registro.strftime('%b %Y') }}</p>
+
+            <div class="d-flex justify-content-center gap-2 mb-4">
+                {% if user.es_admin %}
+                <span
+                    class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10 px-3">Admin</span>
+                {% else %}
+                <span
+                    class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 px-3">Crítico</span>
+                {% endif %}
+            </div>
+
+            {% if current_user.is_authenticated and current_user.id != user.id %}
+            <button class="btn-premium w-100 py-2 mb-4">Seguir</button>
+            {% endif %}
+
+            <div class="nav flex-column gap-2 text-start" id="v-pills-tab" role="tablist">
+                <button class="btn btn-outline-glass text-start py-2 active" id="v-pills-perfil-tab"
+                    data-bs-toggle="pill" data-bs-target="#v-pills-perfil">
+                    <i class="fas fa-user-circle me-3 text-primary"></i>Información
+                </button>
+                <button class="btn btn-outline-glass text-start py-2" id="v-pills-resenas-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-resenas">
+                    <i class="fas fa-comments me-3 text-info"></i>Reseñas <span
+                        class="badge bg-dark bg-opacity-50 ms-auto">{{ reviews|length }}</span>
+                </button>
+                <button class="btn btn-outline-glass text-start py-2" id="v-pills-seguidores-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-seguidores">
+                    <i class="fas fa-users me-3 text-success"></i>Red de Contactos
+                </button>
             </div>
         </div>
     </div>
@@ -56,56 +58,54 @@
     <!-- Contenido Principal -->
     <div class="col-lg-9">
         <div class="tab-content" id="v-pills-tabContent">
-            
+
             <!-- Pestaña: Información -->
-            <div class="tab-pane fade show active" id="v-pills-perfil" role="tabpanel" aria-labelledby="v-pills-perfil-tab">
-                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fas fa-address-card text-primary me-2"></i>Sobre Mí</h5>
-                        {% if user.bio %}
-                        <p class="card-text lead text-muted">{{ user.bio }}</p>
-                        {% else %}
-                        <p class="text-muted fst-italic">Este usuario aún no ha escrito una biografía.</p>
-                        {% endif %}
-                    </div>
+            <div class="tab-pane fade show active" id="v-pills-perfil" role="tabpanel">
+                <div class="glass-card p-4 mb-4">
+                    <h5 class="text-white fw-bold mb-4 d-flex align-items-center">
+                        <i class="fas fa-address-card text-primary me-3"></i>Sobre Mí
+                    </h5>
+                    {% if user.bio %}
+                    <p class="text-muted lead">{{ user.bio }}</p>
+                    {% else %}
+                    <p class="text-muted fst-italic">Este usuario prefiere mantener el misterio (sin biografía).</p>
+                    {% endif %}
                 </div>
 
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 rounded-4 bg-light">
-                            <div class="card-body p-4 text-center">
-                                <h6 class="text-muted text-uppercase fw-bold mb-3">Promedio Otorgado</h6>
-                                <h2 class="display-4 fw-bold text-warning mb-0">
-                                    {% if reviews %}
-                                        {% set total_rating = 0 %}
-                                        {% for review in reviews %}
-                                            {% set total_rating = total_rating + review.calificacion %}
-                                        {% endfor %}
-                                        {{ "%.1f"|format(total_rating / reviews|length) }}
-                                    {% else %}
-                                        0.0
-                                    {% endif %}
-                                </h2>
-                                <div class="text-warning mt-2">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                                </div>
+                        <div
+                            class="glass-card p-4 text-center bg-primary bg-opacity-5 border-primary border-opacity-10">
+                            <h6 class="text-muted small fw-bold text-uppercase mb-3">Promedio de Calificación</h6>
+                            <h2 class="display-4 fw-bold title-gradient mb-0">
+                                {% if reviews %}
+                                {% set total_rating = 0 %}
+                                {% for review in reviews %}
+                                {% set total_rating = total_rating + review.calificacion %}
+                                {% endfor %}
+                                {{ "%.1f"|format(total_rating / reviews|length) }}
+                                {% else %}
+                                0.0
+                                {% endif %}
+                            </h2>
+                            <div class="text-warning mt-2 small">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star-half-alt opacity-50"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 rounded-4 bg-light">
-                            <div class="card-body p-4 text-center">
-                                <h6 class="text-muted text-uppercase fw-bold mb-3">Actividad Total</h6>
-                                <div class="d-flex justify-content-around align-items-center h-100">
-                                    <div>
-                                        <h3 class="fw-bold text-primary mb-0">{{ reviews|length }}</h3>
-                                        <span class="small text-muted">Reseñas</span>
-                                    </div>
-                                    <div class="vr"></div>
-                                    <div>
-                                        <h3 class="fw-bold text-info mb-0">0</h3>
-                                        <span class="small text-muted">Comentarios</span>
-                                    </div>
+                        <div class="glass-card p-4 text-center">
+                            <h6 class="text-muted small fw-bold text-uppercase mb-3">Actividad de Lectura</h6>
+                            <div class="d-flex justify-content-around align-items-center py-2">
+                                <div>
+                                    <h3 class="fw-bold text-white mb-0">{{ reviews|length }}</h3>
+                                    <span class="extra-small text-muted">Reseñas</span>
+                                </div>
+                                <div class="vr bg-glass"></div>
+                                <div>
+                                    <h3 class="fw-bold text-white mb-0">0</h3>
+                                    <span class="extra-small text-muted">Comentarios</span>
                                 </div>
                             </div>
                         </div>
@@ -114,92 +114,81 @@
             </div>
 
             <!-- Pestaña: Reseñas -->
-            <div class="tab-pane fade" id="v-pills-resenas" role="tabpanel" aria-labelledby="v-pills-resenas-tab">
-                <div class="card shadow-sm border-0 rounded-4">
-                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                        <h5 class="fw-bold mb-0 text-primary">
-                            <i class="fas fa-pen-nib me-2"></i> Diario de Lectura
+            <div class="tab-pane fade" id="v-pills-resenas" role="tabpanel">
+                <div class="glass-card overflow-hidden">
+                    <div class="p-4 border-bottom border-glass">
+                        <h5 class="text-white fw-bold mb-0">
+                            <i class="fas fa-pen-nib text-primary me-3"></i>Historial de Críticas
                         </h5>
                     </div>
 
-                    <div class="card-body p-4">
+                    <div class="p-4">
                         {% if reviews %}
-                            <div class="row g-4">
+                        <div class="row g-4">
                             {% for review in reviews %}
-                                <div class="col-md-6">
-                                    <div class="card h-100 border rounded-3 shadow-none hover-shadow transition-all">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                                <div>
-                                                    <a href="{{ url_for('comic_detail', comic_id=review.comic_id) }}" class="text-decoration-none fw-bold text-dark lh-sm d-block mb-1">
-                                                        {{ review.comic.titulo }}
-                                                    </a>
-                                                    <small class="text-muted"><i class="far fa-clock me-1"></i>{{ review.fecha_creacion.strftime('%d/%b/%y') }}</small>
-                                                </div>
-                                                <div class="bg-light rounded px-2 py-1 align-items-center d-flex">
-                                                    <span class="text-warning fw-bold me-1">{{ review.calificacion }}</span>
-                                                    <i class="fas fa-star text-warning small"></i>
-                                                </div>
-                                            </div>
-
-                                            {% if review.texto %}
-                                            <p class="card-text text-muted small mb-3 show-read-more" style="display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                                "{{ review.texto }}"
-                                            </p>
-                                            {% endif %}
+                            <div class="col-md-6">
+                                <div class="glass-card p-3 h-100 hover-shadow transition-all bg-card bg-opacity-5">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="overflow-hidden">
+                                            <a href="{{ url_for('comic_detail', comic_id=review.comic_id) }}"
+                                                class="text-white fw-bold d-block text-truncate text-decoration-none hover:text-primary mb-1">
+                                                {{ review.comic.titulo }}
+                                            </a>
+                                            <small class="text-muted extra-small"><i class="far fa-clock me-2"></i>{{
+                                                review.fecha_creacion.strftime('%d %b, %Y') }}</small>
                                         </div>
-                                        <div class="card-footer bg-transparent border-top-0 pt-0">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <button class="btn btn-sm btn-light text-success rounded-pill px-3">
-                                                    <i class="fas fa-thumbs-up me-1"></i> {{ review.likes }}
-                                                </button>
-                                                <button class="btn btn-sm btn-light text-danger rounded-pill px-3">
-                                                    <i class="fas fa-thumbs-down me-1"></i> {{ review.dislikes }}
-                                                </button>
-                                            </div>
+                                        <div
+                                            class="bg-warning bg-opacity-10 px-2 py-1 rounded border border-warning border-opacity-20 d-flex align-items-center">
+                                            <span class="text-warning fw-bold extra-small me-1">{{ review.calificacion
+                                                }}</span>
+                                            <i class="fas fa-star text-warning extra-small"></i>
                                         </div>
                                     </div>
+
+                                    {% if review.texto %}
+                                    <p class="text-muted extra-small mb-3 lh-base line-clamp-3">"{{ review.texto }}"</p>
+                                    {% endif %}
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-dark bg-opacity-50 text-success extra-small"><i
+                                                class="fas fa-thumbs-up me-1"></i>{{ review.likes }}</span>
+                                        <span class="badge bg-dark bg-opacity-50 text-danger extra-small"><i
+                                                class="fas fa-thumbs-down me-1"></i>{{ review.dislikes }}</span>
+                                    </div>
                                 </div>
+                            </div>
                             {% endfor %}
-                            </div>
+                        </div>
                         {% else %}
-                            <div class="text-center py-5 bg-light rounded-4">
-                                <div class="bg-white rounded-circle p-4 d-inline-block shadow-sm mb-3">
-                                    <i class="fas fa-book-open fa-3x text-muted"></i>
-                                </div>
-                                <h5 class="text-dark fw-bold">Biblioteca Vacía</h5>
-                                <p class="text-muted mb-4 text-center mx-auto" style="max-width: 400px;">
-                                    {{ 'él' if user.id != current_user.id else 'tú' }} aún no ha publicado ninguna reseña. ¡Las opiniones aparecerán aquí!
-                                </p>
-                            </div>
+                        <div class="text-center py-5">
+                            <i class="fas fa-book-open fa-3x text-muted opacity-25 mb-4"></i>
+                            <h5 class="text-white fw-bold">Biblioteca Vacía</h5>
+                            <p class="text-muted small">No hay reseñas publicadas aún por este usuario.</p>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            
+
             <!-- Pestaña: Seguidores/Red -->
-            <div class="tab-pane fade" id="v-pills-seguidores" role="tabpanel" aria-labelledby="v-pills-seguidores-tab">
+            <div class="tab-pane fade" id="v-pills-seguidores" role="tabpanel">
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 rounded-4 h-100">
-                            <div class="card-body p-4 text-center">
-                                <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
-                                    <i class="fas fa-users fa-2x text-primary"></i>
-                                </div>
-                                <h2 class="display-5 fw-bold text-dark mb-1">{{ user.seguidores_count }}</h2>
-                                <p class="text-muted text-uppercase fw-bold mb-0">Seguidores</p>
+                        <div class="glass-card p-4 text-center border-primary border-opacity-10">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
+                                <i class="fas fa-users fa-2x text-primary"></i>
                             </div>
+                            <h2 class="fw-bold text-white mb-1">{{ user.seguidores_count }}</h2>
+                            <p class="text-muted small fw-bold text-uppercase mb-0">Seguidores</p>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 rounded-4 h-100">
-                            <div class="card-body p-4 text-center">
-                                <div class="bg-success bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
-                                    <i class="fas fa-user-friends fa-2x text-success"></i>
-                                </div>
-                                <h2 class="display-5 fw-bold text-dark mb-1">{{ user.siguiendo_count }}</h2>
-                                <p class="text-muted text-uppercase fw-bold mb-0">Siguiendo</p>
+                        <div class="glass-card p-4 text-center border-success border-opacity-10">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
+                                <i class="fas fa-user-friends fa-2x text-success"></i>
                             </div>
+                            <h2 class="fw-bold text-white mb-1">{{ user.siguiendo_count }}</h2>
+                            <p class="text-muted small fw-bold text-uppercase mb-0">Siguiendo</p>
                         </div>
                     </div>
                 </div>
@@ -210,21 +199,31 @@
 </div>
 
 <style>
-/* Estilos adicionales para navegación estilo Bootstrap pill */
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background-color: #f8f9fa;
-    color: #0d6efd !important;
-    font-weight: 600;
-}
-.nav-pills .nav-link:hover:not(.active) {
-    background-color: #f8f9fa;
-}
-.hover-shadow:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    transform: translateY(-2px);
-}
-.transition-all {
-    transition: all 0.3s ease;
-}
+    .extra-small {
+        font-size: 0.75rem;
+    }
+
+    .btn-outline-glass {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.6);
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-outline-glass:hover,
+    .btn-outline-glass.active {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 </style>
 {% endblock %}
