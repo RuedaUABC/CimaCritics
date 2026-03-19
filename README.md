@@ -107,38 +107,6 @@ flask db upgrade
 flask db downgrade
 ```
 
-### Seeders
-Datos iniciales incluyen:
-- 5 usuarios de ejemplo (uno administrador)
-- 5 cómics clásicos
-- Reseñas de ejemplo
-
-## 🔐 Autenticación
-- Sistema de login/registro con Flask-Login
-- Hashing seguro de contraseñas (PBKDF2)
-- Sesiones persistentes
-- Roles de usuario (normal, moderador, admin)
-
-## 📊 Estado del Desarrollo
-
-### ✅ Completado
-- **Configuración del proyecto**: Estructura, virtualenv, dependencias
-- **Base de datos**: Modelos SQLAlchemy, migraciones, seeders
-- **Autenticación**: Sistema de usuarios con Flask-Login
-- **Documentación**: Arquitectura, modelos, APIs planificadas
-
-### 🔄 En Progreso
-- **Rutas básicas**: Endpoints para login/registro
-- **Templates HTML**: Interfaz de usuario
-- **Estilos CSS**: Diseño responsive
-
-### 📋 Próximas Fases
-- **Fase 2**: Interfaz de usuario y navegación
-- **Fase 3**: Sistema de reseñas y calificaciones
-- **Fase 4**: Funcionalidades sociales (seguidores, comentarios)
-- **Fase 5**: Moderación y administración
-- **Fase 6**: Testing y optimización
-
 ## 📚 Documentación
 - **[Dashboard](docs/Dashboard.md)**: Resumen del proyecto
 - **[Arquitectura](docs/Diseño/Arquitectura.md)**: Diseño técnico
@@ -147,10 +115,6 @@ Datos iniciales incluyen:
 - **[APIs](docs/Backend/APIs.md)**: Endpoints planificados
 - **[Requerimientos](docs/Requerimientos/)**: Especificaciones funcionales
 
-## 📝 Licencia
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
-
 ## 📞 Contacto
 - **Email**: rueda.jorge@uabc.edu.mx
 - **GitHub**: [https://github.com/RuedaUABC/CimaCritics](https://github.com/RuedaUABC/CimaCritics)
-
