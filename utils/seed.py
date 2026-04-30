@@ -19,49 +19,59 @@ def seed_database():
 
         usuarios = []
         for data in usuarios_data:
-            usuario = Usuario(
-                nombre=data['nombre'],
-                email=data['email'],
-                es_admin=data.get('es_admin', False)
-            )
-            usuario.set_password(data['password'])
+            usuario = Usuario.query.filter_by(email=data['email']).first()
+            if not usuario:
+                usuario = Usuario(
+                    nombre=data['nombre'],
+                    email=data['email'],
+                    es_admin=data.get('es_admin', False)
+                )
+                usuario.set_password(data['password'])
+                db.session.add(usuario)
             usuarios.append(usuario)
-            db.session.add(usuario)
 
         # Crear y obtener géneros con tags
         genero_names = ['Superhéroes', 'Autobiográfico', 'Fantasía', 'Drama', 'Historia']
         generos_db = {}
         for name in genero_names:
-            genero = Genero(nombre=name)
-            db.session.add(genero)
+            genero = Genero.query.filter_by(nombre=name).first()
+            if not genero:
+                genero = Genero(nombre=name)
+                db.session.add(genero)
             generos_db[name] = genero
         
         db.session.commit()
 
         # Crear cómics de ejemplo
         comics_data = [
-            {'titulo': 'Watchmen', 'escritor': 'Alan Moore', 'dibujante': 'Dave Gibbons', 'lanzamiento': '1986', 'editorial': 'DC Comics', 'generos': ['Superhéroes', 'Drama'], 'descripcion': 'Una historia compleja sobre superhéroes retirados.'},
-            {'titulo': 'The Dark Knight Returns', 'escritor': 'Frank Miller', 'dibujante': 'Frank Miller', 'lanzamiento': '1986', 'editorial': 'DC Comics', 'generos': ['Superhéroes'], 'descripcion': 'Batman regresa en una Gotham distópica.'},
-            {'titulo': 'Maus', 'escritor': 'Art Spiegelman', 'dibujante': 'Art Spiegelman', 'lanzamiento': '1991', 'editorial': 'Pantheon Books', 'generos': ['Autobiográfico', 'Historia'], 'descripcion': 'Historia del Holocausto contada con animales.'},
-            {'titulo': 'Sandman', 'escritor': 'Neil Gaiman', 'dibujante': 'Sam Kieth', 'lanzamiento': '1989', 'editorial': 'DC Comics', 'generos': ['Fantasía'], 'descripcion': 'Las aventuras del Señor de los Sueños.'},
-            {'titulo': 'Persepolis', 'escritor': 'Marjane Satrapi', 'dibujante': 'Marjane Satrapi', 'lanzamiento': '2000', 'editorial': 'Pantheon Books', 'generos': ['Autobiográfico', 'Historia'], 'descripcion': 'Memorias de una niña en la Revolución Iraní.'}
+            {'titulo': 'Watchmen', 'escritor': 'Alan Moore', 'dibujante': 'Dave Gibbons', 'lanzamiento': '1986', 'editorial': 'DC Comics', 'generos': ['Superhéroes', 'Drama'], 'descripcion': 'Una historia compleja sobre superhéroes retirados.', 'imagen_url': 'https://d29xot63vimef3.cloudfront.net/image/watchmen/1-1.jpg'},
+            {'titulo': 'The Dark Knight Returns', 'escritor': 'Frank Miller', 'dibujante': 'Frank Miller', 'lanzamiento': '1986', 'editorial': 'DC Comics', 'generos': ['Superhéroes'], 'descripcion': 'Batman regresa en una Gotham distópica.', 'imagen_url': 'https://d29xot63vimef3.cloudfront.net/image/batman-books/363-6.jpg'},
+            {'titulo': 'Maus', 'escritor': 'Art Spiegelman', 'dibujante': 'Art Spiegelman', 'lanzamiento': '1991', 'editorial': 'Pantheon Books', 'generos': ['Autobiográfico', 'Historia'], 'descripcion': 'Historia del Holocausto contada con animales.', 'imagen_url': 'https://d29xot63vimef3.cloudfront.net/image/bestselling-comics-2006/102-1.jpg'},
+            {'titulo': 'Sandman', 'escritor': 'Neil Gaiman', 'dibujante': 'Sam Kieth', 'lanzamiento': '1989', 'editorial': 'DC Comics', 'generos': ['Fantasía'], 'descripcion': 'Las aventuras del Señor de los Sueños.', 'imagen_url': 'https://d29xot63vimef3.cloudfront.net/image/bestselling-comics-2006/3-1.jpg'},
+            {'titulo': 'Persepolis', 'escritor': 'Marjane Satrapi', 'dibujante': 'Marjane Satrapi', 'lanzamiento': '2000', 'editorial': 'Pantheon Books', 'generos': ['Autobiográfico', 'Historia'], 'descripcion': 'Memorias de una niña en la Revolución Iraní.', 'imagen_url': 'https://d29xot63vimef3.cloudfront.net/image/bestselling-comics-2006/35-1.jpg'}
         ]
 
         comics = []
         for data in comics_data:
-            comic = Comic(
-                titulo=data['titulo'],
-                escritor=data['escritor'],
-                dibujante=data['dibujante'],
-                lanzamiento=data['lanzamiento'],
-                editorial=data['editorial'],
-                descripcion=data['descripcion']
-            )
-            for g_name in data['generos']:
-                comic.generos.append(generos_db[g_name])
-
+            comic = Comic.query.filter_by(titulo=data['titulo']).first()
+            if not comic:
+                comic = Comic(
+                    titulo=data['titulo'],
+                    escritor=data['escritor'],
+                    dibujante=data['dibujante'],
+                    lanzamiento=data['lanzamiento'],
+                    editorial=data['editorial'],
+                    descripcion=data['descripcion'],
+                    imagen_url=data.get('imagen_url')
+                )
+                for g_name in data['generos']:
+                    comic.generos.append(generos_db[g_name])
+                db.session.add(comic)
+            else:
+                # Actualizar imagen_url si existe el cómic
+                if data.get('imagen_url'):
+                    comic.imagen_url = data.get('imagen_url')
             comics.append(comic)
-            db.session.add(comic)
 
         db.session.commit()  # Commit para obtener IDs
 
@@ -76,13 +86,18 @@ def seed_database():
         ]
 
         for data in reviews_data:
-            review = Review(
+            existing_review = Review.query.filter_by(
                 usuario_id=data['usuario'].id,
-                comic_id=data['comic'].id,
-                calificacion=data['calificacion'],
-                texto=data['texto']
-            )
-            db.session.add(review)
+                comic_id=data['comic'].id
+            ).first()
+            if not existing_review:
+                review = Review(
+                    usuario_id=data['usuario'].id,
+                    comic_id=data['comic'].id,
+                    calificacion=data['calificacion'],
+                    texto=data['texto']
+                )
+                db.session.add(review)
 
         db.session.commit()
         print("Base de datos sembrada con datos iniciales.")
