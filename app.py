@@ -12,7 +12,7 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
-from models import Usuario, Comic, Review, Seguimiento, Reporte, Comentario
+from models import Usuario, Comic, Review, Seguimiento, Reporte, Comentario, VotoReview, ComicGuardado
 from routes.main import *
 
 if __name__ == '__main__':

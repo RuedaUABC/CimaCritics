@@ -23,6 +23,7 @@ class Usuario(UserMixin, db.Model):
     reportes = db.relationship('Reporte', backref='reportador', lazy='dynamic')
     seguidores = db.relationship('Seguimiento', foreign_keys='Seguimiento.seguido_id', backref='seguido', lazy='dynamic')
     siguiendo = db.relationship('Seguimiento', foreign_keys='Seguimiento.seguidor_id', backref='seguidor', lazy='dynamic')
+    comics_guardados = db.relationship('ComicGuardado', backref='usuario', lazy='dynamic', cascade='all, delete-orphan')
 
     def set_password(self, password):
         self.contraseña_hash = generate_password_hash(password)
@@ -62,6 +63,7 @@ class Comic(db.Model):
 
     # Relaciones
     reviews = db.relationship('Review', backref='comic', lazy='dynamic')
+    guardados = db.relationship('ComicGuardado', backref='comic', lazy='dynamic', cascade='all, delete-orphan')
     generos = db.relationship('Genero', secondary=comic_genero, lazy='subquery',
         backref=db.backref('comics', lazy=True))
 
@@ -80,7 +82,8 @@ class Review(db.Model):
     dislikes = db.Column(db.Integer, default=0)
 
     # Relaciones
-    comentarios = db.relationship('Comentario', backref='review', lazy='dynamic')
+    comentarios = db.relationship('Comentario', backref='review', lazy='dynamic', cascade='all, delete-orphan')
+    votos = db.relationship('VotoReview', backref='review', lazy='dynamic', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Review {self.id} - {self.calificacion} estrellas>'
@@ -92,8 +95,26 @@ class Seguimiento(db.Model):
     seguido_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     fecha_seguimiento = db.Column(db.DateTime, default=datetime.utcnow)
 
+    __table_args__ = (
+        db.UniqueConstraint('seguidor_id', 'seguido_id', name='uq_seguimiento_usuarios'),
+    )
+
     def __repr__(self):
         return f'<Seguimiento {self.seguidor_id} -> {self.seguido_id}>'
+
+class ComicGuardado(db.Model):
+    __tablename__ = 'comic_guardado'
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    comic_id = db.Column(db.Integer, db.ForeignKey('comic.id'), nullable=False)
+    fecha_guardado = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        db.UniqueConstraint('usuario_id', 'comic_id', name='uq_comic_guardado_usuario'),
+    )
+
+    def __repr__(self):
+        return f'<ComicGuardado {self.usuario_id} -> {self.comic_id}>'
 
 class Reporte(db.Model):
     __tablename__ = 'reporte'
@@ -121,3 +142,20 @@ class Comentario(db.Model):
 
     def __repr__(self):
         return f'<Comentario {self.id}>'
+
+class VotoReview(db.Model):
+    __tablename__ = 'voto_review'
+    id = db.Column(db.Integer, primary_key=True)
+    review_id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=False)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    tipo = db.Column(db.String(8), nullable=False)  # like, dislike
+    fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
+
+    usuario = db.relationship('Usuario', backref=db.backref('votos_review', lazy='dynamic'))
+
+    __table_args__ = (
+        db.UniqueConstraint('review_id', 'usuario_id', name='uq_voto_review_usuario'),
+    )
+
+    def __repr__(self):
+        return f'<VotoReview {self.usuario_id} -> {self.review_id} ({self.tipo})>'

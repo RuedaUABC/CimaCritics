@@ -68,9 +68,16 @@
                 <i class="fas fa-pencil-alt me-2"></i> Escribir Reseña
             </button>
             {% endif %}
-            <button class="btn btn-outline-glass w-100 py-2">
-                <i class="fas fa-bookmark me-2"></i> Guardar lista
-            </button>
+            <form method="POST" action="{{ url_for('toggle_saved_comic', comic_id=comic.id) }}">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-outline-glass w-100 py-2">
+                    {% if user_has_saved %}
+                    <i class="fas fa-bookmark me-2 text-warning"></i> Guardado
+                    {% else %}
+                    <i class="far fa-bookmark me-2"></i> Guardar en biblioteca
+                    {% endif %}
+                </button>
+            </form>
         </div>
         {% endif %}
     </div>
@@ -184,13 +191,28 @@
                         style="font-size: 1rem; line-height: 1.6;">{{ review.texto }}</p>
                     {% endif %}
 
-                    <div class="d-flex align-items-center gap-3">
-                        <button class="btn btn-sm btn-outline-glass rounded-pill px-3 hover:bg-success transition-all">
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        {% if current_user.is_authenticated %}
+                        <form method="POST" action="{{ url_for('vote_review', review_id=review.id, vote_type='like') }}" class="d-inline">
+                            {{ form.hidden_tag() }}
+                            <button type="submit" class="btn btn-sm btn-outline-glass rounded-pill px-3 hover:bg-success transition-all">
+                                <i class="fas fa-thumbs-up me-1"></i> {{ review.likes }}
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('vote_review', review_id=review.id, vote_type='dislike') }}" class="d-inline">
+                            {{ form.hidden_tag() }}
+                            <button type="submit" class="btn btn-sm btn-outline-glass rounded-pill px-3 hover:bg-danger transition-all">
+                                <i class="fas fa-thumbs-down me-1"></i> {{ review.dislikes }}
+                            </button>
+                        </form>
+                        {% else %}
+                        <span class="btn btn-sm btn-outline-glass rounded-pill px-3 disabled">
                             <i class="fas fa-thumbs-up me-1"></i> {{ review.likes }}
-                        </button>
-                        <button class="btn btn-sm btn-outline-glass rounded-pill px-3 hover:bg-danger transition-all">
+                        </span>
+                        <span class="btn btn-sm btn-outline-glass rounded-pill px-3 disabled">
                             <i class="fas fa-thumbs-down me-1"></i> {{ review.dislikes }}
-                        </button>
+                        </span>
+                        {% endif %}
                         
                         {% if current_user.is_authenticated and review.usuario_id == current_user.id %}
                         <div class="ms-auto d-flex gap-2">
@@ -208,9 +230,96 @@
                             </button>
                         </div>
                         {% else %}
-                        <button class="btn btn-sm btn-link text-muted ms-auto text-decoration-none extra-small">
+                        {% if current_user.is_authenticated %}
+                        <button class="btn btn-sm btn-link text-muted ms-auto text-decoration-none extra-small"
+                                data-bs-toggle="collapse" data-bs-target="#commentForm{{ review.id }}">
                             <i class="fas fa-reply me-1"></i> Responder
                         </button>
+                        <button class="btn btn-sm btn-link text-warning text-decoration-none extra-small"
+                                data-bs-toggle="collapse" data-bs-target="#reportReviewForm{{ review.id }}">
+                            <i class="fas fa-flag me-1"></i> Reportar
+                        </button>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+
+                    {% if current_user.is_authenticated %}
+                    <div class="collapse mt-3" id="reportReviewForm{{ review.id }}">
+                        <form method="POST" action="{{ url_for('report_content', content_type='review', content_id=review.id) }}" class="bg-dark bg-opacity-25 border border-warning border-opacity-25 rounded-3 p-3">
+                            {{ report_form.hidden_tag() }}
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-4">
+                                    {{ report_form.motivo.label(class="form-label text-muted extra-small fw-bold text-uppercase") }}
+                                    {{ report_form.motivo(class="form-select form-select-sm bg-dark border-glass text-white") }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ report_form.descripcion.label(class="form-label text-muted extra-small fw-bold text-uppercase") }}
+                                    {{ report_form.descripcion(class="form-control form-control-sm bg-dark border-glass text-white", rows="1", placeholder="Contexto opcional") }}
+                                </div>
+                                <div class="col-md-2 d-grid">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill">Enviar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4 ps-md-5">
+                        {% set comments = review.comentarios.all() %}
+                        {% if comments %}
+                        <div class="d-flex flex-column gap-3 mb-3">
+                            {% for comment in comments %}
+                            <div class="bg-dark bg-opacity-25 border border-glass rounded-3 p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <a href="{{ url_for('perfil', user_id=comment.usuario_id) }}" class="text-white text-decoration-none fw-bold extra-small">
+                                            {{ comment.autor.nombre }}
+                                        </a>
+                                        <span class="text-muted extra-small ms-2">{{ comment.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}</span>
+                                    </div>
+                                    {% if current_user.is_authenticated and (comment.usuario_id == current_user.id or current_user.es_admin) %}
+                                    <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                                        {{ form.hidden_tag() }}
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0 extra-small">Eliminar</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                                <p class="text-muted small mb-0">{{ comment.texto }}</p>
+                                {% if current_user.is_authenticated %}
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-link text-warning p-0 extra-small"
+                                            data-bs-toggle="collapse" data-bs-target="#reportCommentForm{{ comment.id }}">
+                                        <i class="fas fa-flag me-1"></i> Reportar comentario
+                                    </button>
+                                    <div class="collapse mt-2" id="reportCommentForm{{ comment.id }}">
+                                        <form method="POST" action="{{ url_for('report_content', content_type='comentario', content_id=comment.id) }}" class="row g-2 align-items-end">
+                                            {{ report_form.hidden_tag() }}
+                                            <div class="col-md-4">
+                                                {{ report_form.motivo(class="form-select form-select-sm bg-dark border-glass text-white") }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ report_form.descripcion(class="form-control form-control-sm bg-dark border-glass text-white", rows="1", placeholder="Contexto opcional") }}
+                                            </div>
+                                            <div class="col-md-2 d-grid">
+                                                <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill">Enviar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if current_user.is_authenticated %}
+                        <div class="collapse" id="commentForm{{ review.id }}">
+                            <form method="POST" action="{{ url_for('add_comment', review_id=review.id) }}" class="d-flex gap-2">
+                                {{ comment_form.hidden_tag() }}
+                                {{ comment_form.texto(class="form-control bg-dark bg-opacity-50 border-glass text-white", rows="1", placeholder="Responder a esta reseña...") }}
+                                <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill px-3">Enviar</button>
+                            </form>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
