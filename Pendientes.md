@@ -4,7 +4,7 @@ Este documento resume las implementaciones que siguen pendientes después de los
 
 ## Alta prioridad
 
-- [ ] **Guardar listas personalizadas**
+- [x] **Guardar listas personalizadas**
   - Actualmente existe una biblioteca simple de cómics guardados.
   - Falta permitir listas separadas como "Leyendo", "Por leer", "Favoritos" o listas creadas por el usuario.
 

@@ -7,6 +7,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange
 
+LISTAS_BIBLIOTECA_PREDEFINIDAS = ['Guardados', 'Leyendo', 'Por leer', 'Favoritos']
+
 # User loader para Flask-Login
 @login.user_loader
 def load_user(user_id):
@@ -94,6 +96,16 @@ def refresh_follow_counts(*users):
 def recalculate_review_votes(review):
     review.likes = VotoReview.query.filter_by(review_id=review.id, tipo='like').count()
     review.dislikes = VotoReview.query.filter_by(review_id=review.id, tipo='dislike').count()
+
+def normalize_library_list_name(raw_name):
+    name = (raw_name or ComicGuardado.DEFAULT_LISTA).strip()
+    return name[:64] or ComicGuardado.DEFAULT_LISTA
+
+def group_saved_comics_by_list(comics_guardados):
+    grouped = {}
+    for saved in comics_guardados:
+        grouped.setdefault(saved.lista or ComicGuardado.DEFAULT_LISTA, []).append(saved)
+    return grouped
 
 def get_reportable_content(content_type, content_id):
     if content_type == 'review':
@@ -223,14 +235,23 @@ def comic_detail(comic_id):
     report_form = ReportForm()
     user_has_reviewed = False
     user_has_saved = False
+    user_saved_lists = []
     if current_user.is_authenticated:
         user_has_reviewed = Review.query.filter_by(usuario_id=current_user.id, comic_id=comic_id).first() is not None
         user_has_saved = ComicGuardado.query.filter_by(usuario_id=current_user.id, comic_id=comic_id).first() is not None
+        user_saved_lists = [
+            saved.lista for saved in ComicGuardado.query.filter_by(
+                usuario_id=current_user.id,
+                comic_id=comic_id
+            ).order_by(ComicGuardado.lista.asc()).all()
+        ]
 
     return render_template('comic_detail.html', title=comic.titulo,
                          comic=comic, reviews=reviews, form=form, comment_form=comment_form,
                          report_form=report_form,
-                         user_has_reviewed=user_has_reviewed, user_has_saved=user_has_saved)
+                         user_has_reviewed=user_has_reviewed, user_has_saved=user_has_saved,
+                         user_saved_lists=user_saved_lists,
+                         predefined_library_lists=LISTAS_BIBLIOTECA_PREDEFINIDAS)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -287,6 +308,7 @@ def perfil(user_id):
     seguidores = Seguimiento.query.filter_by(seguido_id=user_id).all()
     siguiendo = Seguimiento.query.filter_by(seguidor_id=user_id).all()
     comics_guardados = ComicGuardado.query.filter_by(usuario_id=user_id).order_by(ComicGuardado.fecha_guardado.desc()).all()
+    listas_guardadas = group_saved_comics_by_list(comics_guardados)
     comment_count = Comentario.query.filter_by(usuario_id=user_id).count()
     is_following = False
     if current_user.is_authenticated and current_user.id != user_id:
@@ -299,6 +321,7 @@ def perfil(user_id):
     return render_template('perfil.html', title=f'Perfil de {user.nombre}',
                          user=user, reviews=reviews, form=form, comment_count=comment_count,
                          seguidores=seguidores, siguiendo=siguiendo, comics_guardados=comics_guardados,
+                         listas_guardadas=listas_guardadas,
                          is_following=is_following)
 
 @app.route('/perfil/edit', methods=['GET', 'POST'])
@@ -336,14 +359,15 @@ def edit_profile():
 def toggle_saved_comic(comic_id):
     """Guardar o retirar un cómic de la biblioteca personal."""
     comic = Comic.query.get_or_404(comic_id)
-    saved = ComicGuardado.query.filter_by(usuario_id=current_user.id, comic_id=comic.id).first()
+    lista = normalize_library_list_name(request.form.get('lista_personalizada') or request.form.get('lista'))
+    saved = ComicGuardado.query.filter_by(usuario_id=current_user.id, comic_id=comic.id, lista=lista).first()
 
     if saved:
         db.session.delete(saved)
-        flash(f'"{comic.titulo}" fue retirado de tu biblioteca.', 'info')
+        flash(f'"{comic.titulo}" fue retirado de la lista "{lista}".', 'info')
     else:
-        db.session.add(ComicGuardado(usuario_id=current_user.id, comic_id=comic.id))
-        flash(f'"{comic.titulo}" fue guardado en tu biblioteca.', 'success')
+        db.session.add(ComicGuardado(usuario_id=current_user.id, comic_id=comic.id, lista=lista))
+        flash(f'"{comic.titulo}" fue guardado en la lista "{lista}".', 'success')
 
     db.session.commit()
     return redirect_back('comic_detail', comic_id=comic.id)

@@ -104,17 +104,20 @@ class Seguimiento(db.Model):
 
 class ComicGuardado(db.Model):
     __tablename__ = 'comic_guardado'
+    DEFAULT_LISTA = 'Guardados'
+
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     comic_id = db.Column(db.Integer, db.ForeignKey('comic.id'), nullable=False)
+    lista = db.Column(db.String(64), nullable=False, default=DEFAULT_LISTA)
     fecha_guardado = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (
-        db.UniqueConstraint('usuario_id', 'comic_id', name='uq_comic_guardado_usuario'),
+        db.UniqueConstraint('usuario_id', 'comic_id', 'lista', name='uq_comic_guardado_usuario_lista'),
     )
 
     def __repr__(self):
-        return f'<ComicGuardado {self.usuario_id} -> {self.comic_id}>'
+        return f'<ComicGuardado {self.usuario_id} -> {self.comic_id} ({self.lista})>'
 
 class Reporte(db.Model):
     __tablename__ = 'reporte'

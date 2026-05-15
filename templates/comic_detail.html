@@ -70,6 +70,14 @@
             {% endif %}
             <form method="POST" action="{{ url_for('toggle_saved_comic', comic_id=comic.id) }}">
                 {{ form.hidden_tag() }}
+                <label class="form-label text-muted small fw-bold text-uppercase">Lista</label>
+                <select name="lista" class="form-select bg-dark border-glass text-white mb-2">
+                    {% for lista in predefined_library_lists %}
+                    <option value="{{ lista }}" {% if lista in user_saved_lists %}selected{% endif %}>{{ lista }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="lista_personalizada" class="form-control bg-dark bg-opacity-50 border-glass text-white mb-3"
+                       placeholder="O crea una lista nueva">
                 <button type="submit" class="btn btn-outline-glass w-100 py-2">
                     {% if user_has_saved %}
                     <i class="fas fa-bookmark me-2 text-warning"></i> Guardado

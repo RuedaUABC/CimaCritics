@@ -1,5 +1,5 @@
 from app import db
-from models import ComicGuardado, Usuario
+from models import Comic, ComicGuardado, Usuario
 from tests.conftest import login
 
 
@@ -26,6 +26,53 @@ def test_saved_comic_appears_in_profile_library(client, sample_user, sample_comi
     assert response.status_code == 200
     assert b'Biblioteca Guardada' in response.data
     assert sample_comic.titulo.encode('utf-8') in response.data
+
+
+def test_user_can_save_comic_in_separate_and_custom_lists(client, app, sample_user, sample_comic):
+    """La biblioteca documentada como "Mis listas" permite listas separadas."""
+    custom_comic = Comic(
+        titulo='Saga',
+        escritor='Brian K. Vaughan',
+        dibujante='Fiona Staples',
+        lanzamiento='2012',
+        editorial='Image Comics',
+        descripcion='Opera espacial familiar.',
+    )
+    db.session.add(custom_comic)
+    db.session.commit()
+    login(client)
+
+    leyendo_response = client.post(
+        f'/comics/{sample_comic.id}/save',
+        data={'lista': 'Leyendo'},
+        follow_redirects=True,
+    )
+    custom_response = client.post(
+        f'/comics/{custom_comic.id}/save',
+        data={'lista': 'Club del viernes'},
+        follow_redirects=True,
+    )
+
+    assert leyendo_response.status_code == 200
+    assert custom_response.status_code == 200
+    assert ComicGuardado.query.filter_by(
+        usuario_id=sample_user.id,
+        comic_id=sample_comic.id,
+        lista='Leyendo',
+    ).count() == 1
+    assert ComicGuardado.query.filter_by(
+        usuario_id=sample_user.id,
+        comic_id=custom_comic.id,
+        lista='Club del viernes',
+    ).count() == 1
+
+    profile_response = client.get(f'/perfil/{sample_user.id}')
+
+    assert b'Mis listas' in profile_response.data
+    assert 'Leyendo'.encode('utf-8') in profile_response.data
+    assert 'Club del viernes'.encode('utf-8') in profile_response.data
+    assert sample_comic.titulo.encode('utf-8') in profile_response.data
+    assert custom_comic.titulo.encode('utf-8') in profile_response.data
 
 
 def test_user_can_edit_profile(client, sample_user):
